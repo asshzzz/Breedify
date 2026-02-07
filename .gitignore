@@ -1,0 +1,53 @@
+# -----------------------------
+# Node.js
+# -----------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# React build files
+# -----------------------------
+build/
+dist/
+.cache/
+.next/
+out/
+
+# -----------------------------
+# Testing
+# -----------------------------
+coverage/
+
+# -----------------------------
+# IDE / Editor
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# -----------------------------
+# Misc
+# -----------------------------
+tmp/
+temp/
+*.local
