@@ -94,7 +94,7 @@ const Register = () => {
 
       if (response) {
         setSuccess('Registration successful! Redirecting to login...');
-        
+
         // Clear form
         setFormData({
           name: '',
@@ -117,45 +117,48 @@ const Register = () => {
     }
   };
 
+  const inputClass =
+    "w-full pl-10 pr-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none transition-colors";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-12 px-4">
+    <div className="min-h-screen bg-[#FAFAF9] py-16 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block">
-            <h1 className="text-4xl font-bold text-green-700">ATC System</h1>
+            <span className="text-lg font-semibold tracking-tight text-[#111827]">ATC System</span>
           </Link>
-          <p className="text-gray-600 mt-2">Create your account</p>
+          <p className="text-[#6B7280] text-sm mt-2">Create your account</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
-              <AlertCircle className="text-red-600 mt-0.5 mr-3 flex-shrink-0" size={20} />
-              <p className="text-red-800 text-sm">{error}</p>
+            <div className="mb-6 p-4 bg-[#FEF2F2] border border-[#FCA5A5]/60 rounded-xl flex items-start gap-3">
+              <AlertCircle className="text-[#DC2626] mt-0.5 flex-shrink-0" size={18} />
+              <p className="text-[#DC2626] text-sm">{error}</p>
             </div>
           )}
 
           {success && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start">
-              <CheckCircle className="text-green-600 mt-0.5 mr-3 flex-shrink-0" size={20} />
-              <p className="text-green-800 text-sm">{success}</p>
+            <div className="mb-6 p-4 bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl flex items-start gap-3">
+              <CheckCircle className="text-[#166534] mt-0.5 flex-shrink-0" size={18} />
+              <p className="text-[#166534] text-sm">{success}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Full Name <span className="text-red-500">*</span>
+                <label className="block text-[#374151] text-sm font-medium mb-2">
+                  Full Name <span className="text-[#DC2626]">*</span>
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-3 text-gray-400" size={20} />
+                  <User className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                    className={inputClass}
                     placeholder="Enter your name"
                     disabled={loading}
                     required
@@ -165,17 +168,17 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Email Address <span className="text-red-500">*</span>
+                <label className="block text-[#374151] text-sm font-medium mb-2">
+                  Email Address <span className="text-[#DC2626]">*</span>
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
+                  <Mail className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                    className={inputClass}
                     placeholder="your.email@example.com"
                     disabled={loading}
                     required
@@ -184,17 +187,17 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Phone Number <span className="text-red-500">*</span>
+                <label className="block text-[#374151] text-sm font-medium mb-2">
+                  Phone Number <span className="text-[#DC2626]">*</span>
                 </label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-3 text-gray-400" size={20} />
+                  <Phone className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
                   <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                    className={inputClass}
                     placeholder="10-digit number"
                     pattern="[0-9]{10}"
                     disabled={loading}
@@ -204,17 +207,17 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Location <span className="text-red-500">*</span>
+                <label className="block text-[#374151] text-sm font-medium mb-2">
+                  Location <span className="text-[#DC2626]">*</span>
                 </label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-3 text-gray-400" size={20} />
+                  <MapPin className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
                   <input
                     type="text"
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                    className={inputClass}
                     placeholder="City, State"
                     disabled={loading}
                     required
@@ -223,14 +226,14 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Role <span className="text-red-500">*</span>
+                <label className="block text-[#374151] text-sm font-medium mb-2">
+                  Role <span className="text-[#DC2626]">*</span>
                 </label>
                 <select
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none transition-colors"
                   disabled={loading}
                   required
                 >
@@ -241,17 +244,17 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Password <span className="text-red-500">*</span>
+                <label className="block text-[#374151] text-sm font-medium mb-2">
+                  Password <span className="text-[#DC2626]">*</span>
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
+                  <Lock className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
                   <input
                     type="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                    className={inputClass}
                     placeholder="Minimum 6 characters"
                     disabled={loading}
                     required
@@ -261,17 +264,17 @@ const Register = () => {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Confirm Password <span className="text-red-500">*</span>
+                <label className="block text-[#374151] text-sm font-medium mb-2">
+                  Confirm Password <span className="text-[#DC2626]">*</span>
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
+                  <Lock className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
                   <input
                     type="password"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                    className={inputClass}
                     placeholder="Re-enter password"
                     disabled={loading}
                     required
@@ -282,14 +285,14 @@ const Register = () => {
             </div>
 
             <div className="mt-6">
-              <label className="flex items-start">
-                <input 
-                  type="checkbox" 
-                  className="w-4 h-4 mt-1 text-green-600 rounded focus:ring-2 focus:ring-green-500" 
-                  required 
+              <label className="flex items-start gap-2">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 mt-0.5 text-[#166534] rounded focus:ring-2 focus:ring-[#166534]/30"
+                  required
                   disabled={loading}
                 />
-                <span className="ml-2 text-sm text-gray-600">
+                <span className="text-sm text-[#6B7280]">
                   I agree to the Terms of Service and Privacy Policy
                 </span>
               </label>
@@ -298,14 +301,11 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full mt-6 bg-[#166534] text-white text-sm font-medium py-3 rounded-full hover:bg-[#14532D] transition-colors disabled:bg-[#9CA3AF] disabled:cursor-not-allowed"
             >
               {loading ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   Creating Account...
                 </span>
               ) : (
@@ -315,11 +315,11 @@ const Register = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm">
+            <p className="text-[#6B7280] text-sm">
               Already have an account?{' '}
-              <Link 
-                to="/login" 
-                className="text-green-600 hover:text-green-700 font-semibold"
+              <Link
+                to="/login"
+                className="text-[#166534] hover:text-[#14532D] font-medium"
               >
                 Sign in here
               </Link>
@@ -328,9 +328,9 @@ const Register = () => {
         </div>
 
         <div className="text-center mt-6">
-          <Link 
-            to="/" 
-            className="text-gray-600 hover:text-gray-800 text-sm"
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1 text-[#6B7280] hover:text-[#111827] text-sm transition-colors"
           >
             ← Back to Home
           </Link>

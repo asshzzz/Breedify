@@ -64,36 +64,36 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block">
-            <h1 className="text-4xl font-bold text-green-700">ATC System</h1>
+            <span className="text-lg font-semibold tracking-tight text-[#111827]">ATC System</span>
           </Link>
-          <p className="text-gray-600 mt-2">Sign in to your account</p>
+          <p className="text-[#6B7280] text-sm mt-2">Sign in to your account</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
-              <AlertCircle className="text-red-600 mt-0.5 mr-3 flex-shrink-0" size={20} />
-              <p className="text-red-800 text-sm">{error}</p>
+            <div className="mb-6 p-4 bg-[#FEF2F2] border border-[#FCA5A5]/60 rounded-xl flex items-start gap-3">
+              <AlertCircle className="text-[#DC2626] mt-0.5 flex-shrink-0" size={18} />
+              <p className="text-[#DC2626] text-sm">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
-            <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
+            <div className="mb-5">
+              <label className="block text-[#374151] text-sm font-medium mb-2">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
+                <Mail className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-10 pr-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none transition-colors"
                   placeholder="your.email@example.com"
                   required
                   disabled={loading}
@@ -101,18 +101,18 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
+            <div className="mb-5">
+              <label className="block text-[#374151] text-sm font-medium mb-2">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
+                <Lock className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-10 pr-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none transition-colors"
                   placeholder="Enter your password"
                   required
                   disabled={loading}
@@ -122,16 +122,16 @@ const Login = () => {
             </div>
 
             <div className="flex items-center justify-between mb-6">
-              <label className="flex items-center">
-                <input 
-                  type="checkbox" 
-                  className="w-4 h-4 text-green-600 rounded focus:ring-2 focus:ring-green-500" 
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 text-[#166534] rounded focus:ring-2 focus:ring-[#166534]/30"
                 />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                <span className="text-sm text-[#6B7280]">Remember me</span>
               </label>
-              <Link 
-                to="/forgot-password" 
-                className="text-sm text-green-600 hover:text-green-700 font-medium"
+              <Link
+                to="/forgot-password"
+                className="text-sm text-[#166534] hover:text-[#14532D] font-medium"
               >
                 Forgot Password?
               </Link>
@@ -140,14 +140,11 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-[#166534] text-white text-sm font-medium py-3 rounded-full hover:bg-[#14532D] transition-colors disabled:bg-[#9CA3AF] disabled:cursor-not-allowed"
             >
               {loading ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   Signing in...
                 </span>
               ) : (
@@ -157,11 +154,11 @@ const Login = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm">
+            <p className="text-[#6B7280] text-sm">
               Don't have an account?{' '}
-              <Link 
-                to="/register" 
-                className="text-green-600 hover:text-green-700 font-semibold"
+              <Link
+                to="/register"
+                className="text-[#166534] hover:text-[#14532D] font-medium"
               >
                 Register here
               </Link>
@@ -170,9 +167,9 @@ const Login = () => {
         </div>
 
         <div className="text-center mt-6">
-          <Link 
-            to="/" 
-            className="text-gray-600 hover:text-gray-800 text-sm"
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1 text-[#6B7280] hover:text-[#111827] text-sm transition-colors"
           >
             ← Back to Home
           </Link>

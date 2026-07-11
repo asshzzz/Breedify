@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Camera, FileText, BarChart3, Database } from 'lucide-react';
+import { Camera, FileText, BarChart3, Database, ArrowRight } from 'lucide-react';
 import { isAuthenticated } from '../api';
 
 const Home = () => {
@@ -15,143 +15,168 @@ const Home = () => {
     }
   };
 
+  const features = [
+    {
+      icon: Camera,
+      title: "Image Capture",
+      description: "Capture high-quality images of cattle and buffaloes for accurate analysis",
+    },
+    {
+      icon: BarChart3,
+      title: "AI Analysis",
+      description: "Automated extraction of body parameters using advanced AI algorithms",
+    },
+    {
+      icon: FileText,
+      title: "Auto Scoring",
+      description: "Generate standardized classification scores with minimal human intervention",
+    },
+    {
+      icon: Database,
+      title: "BPA Integration",
+      description: "Seamless integration with Bharat Pashudhan App for data management",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+    <div className="min-h-screen bg-[#FAFAF9]">
       {/* Navigation */}
-      <nav className="bg-white shadow-md">
-        <div className="container mx-auto px-6 py-4">
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <img 
-                src="/logo.png" 
-                alt="Logo" 
-                className="h-10 w-10" 
-                onError={(e) => e.target.style.display = 'none'} 
-              />
-              <h1 className="text-2xl font-bold text-green-700">ATC System</h1>
-            </div>
-            <div className="flex space-x-4">
-              {isAuthenticated() ? (
-                <>
-                  <Link 
-                    to="/dashboard" 
-                    className="px-4 py-2 text-green-700 hover:bg-green-50 rounded-lg transition"
-                  >
-                    Dashboard
-                  </Link>
-                  <button
-                    onClick={() => {
-                      localStorage.removeItem('token');
-                      localStorage.removeItem('user');
-                      navigate('/login');
-                    }}
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link 
-                    to="/login" 
-                    className="px-4 py-2 text-green-700 hover:bg-green-50 rounded-lg transition"
-                  >
-                    Login
-                  </Link>
-                  <Link 
-                    to="/register" 
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                  >
-                    Register
-                  </Link>
-                </>
-              )}
-            </div>
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="h-8 w-8 object-contain"
+              onError={(e) => (e.target.style.display = 'none')}
+            />
+            <span className="text-lg font-semibold tracking-tight text-[#111827]">
+              ATC System
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {isAuthenticated() ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors px-3 py-2"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    navigate('/login');
+                  }}
+                  className="text-sm font-medium text-[#DC2626] border border-[#FCA5A5]/60 px-4 py-2 rounded-lg hover:bg-[#FEF2F2] transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors px-3 py-2"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="text-sm font-medium text-white bg-[#166534] px-4 py-2 rounded-lg hover:bg-[#14532D] transition-colors"
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <div className="container mx-auto px-6 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-gray-800 mb-6">
-            AI-Powered Animal Type Classification
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Automated scoring system for cattle and buffaloes under Rashtriya Gokul Mission. 
-            Standardize animal evaluation with AI-driven precision.
-          </p>
-          <button
-            onClick={handleGetStarted}
-            className="inline-block px-8 py-4 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 transition shadow-lg cursor-pointer"
-          >
-            Get Started
-          </button>
-        </div>
-
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-            <div className="bg-green-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-              <Camera className="text-green-600" size={28} />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">Image Capture</h3>
-            <p className="text-gray-600">
-              Capture high-quality images of cattle and buffaloes for accurate analysis
+      <div className="max-w-6xl mx-auto px-6 pt-16 pb-20">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.2em] text-[#166534] uppercase mb-4">
+              Rashtriya Gokul Mission
             </p>
+            <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-[#111827] mb-6 leading-[1.15]">
+              AI-powered animal type classification
+            </h1>
+            <p className="text-base md:text-lg text-[#6B7280] mb-10 leading-relaxed">
+              An automated scoring system for cattle and buffaloes — standardizing animal
+              evaluation with consistent, AI-driven precision.
+            </p>
+            <button
+              onClick={handleGetStarted}
+              className="inline-flex items-center gap-2 bg-[#166534] text-white text-sm font-medium px-6 py-3 rounded-full hover:bg-[#14532D] transition-colors"
+            >
+              Get started
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-            <div className="bg-blue-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-              <BarChart3 className="text-blue-600" size={28} />
+          <div className="relative rounded-2xl overflow-hidden border border-[#E5E7EB] shadow-sm">
+            <img
+              src="https://images.pexels.com/photos/4577861/pexels-photo-4577861.jpeg?auto=compress&cs=tinysrgb&w=1200"
+              alt="Cattle grazing in a pasture"
+              className="w-full h-72 md:h-96 object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4">
+              <p className="text-white text-sm font-medium">
+                Standardized evaluation for indigenous breeds
+              </p>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">AI Analysis</h3>
-            <p className="text-gray-600">
-              Automated extraction of body parameters using advanced AI algorithms
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-            <div className="bg-purple-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-              <FileText className="text-purple-600" size={28} />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">Auto Scoring</h3>
-            <p className="text-gray-600">
-              Generate standardized classification scores with minimal human intervention
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-            <div className="bg-orange-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
-              <Database className="text-orange-600" size={28} />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">BPA Integration</h3>
-            <p className="text-gray-600">
-              Seamless integration with Bharat Pashudhan App for data management
-            </p>
           </div>
         </div>
+      </div>
 
-        {/* About Section */}
-        <div className="mt-20 bg-white rounded-2xl shadow-xl p-10">
-          <h3 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+      {/* Features Grid */}
+      <div className="max-w-6xl mx-auto px-6 pb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {features.map(({ icon: Icon, title, description }) => (
+            <div
+              key={title}
+              className="bg-white border border-[#E5E7EB] rounded-2xl p-6 hover:border-[#D1D5DB] hover:shadow-md transition-all duration-200"
+            >
+              <div className="w-11 h-11 rounded-xl bg-[#F0FDF4] flex items-center justify-center mb-5">
+                <Icon className="text-[#166534]" size={20} />
+              </div>
+              <h3 className="text-base font-semibold text-[#111827] mb-2">
+                {title}
+              </h3>
+              <p className="text-sm text-[#6B7280] leading-relaxed">
+                {description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* About Section */}
+      <div className="max-w-6xl mx-auto px-6 pb-20">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 md:p-12">
+          <h3 className="text-xl font-semibold text-[#111827] mb-4">
             About Rashtriya Gokul Mission
           </h3>
-          <p className="text-gray-600 text-lg leading-relaxed">
-            The Government of India's Rashtriya Gokul Mission aims to conserve and develop indigenous 
-            bovine breeds, genetically upgrade the bovine population, and enhance milk productivity. 
-            Our AI-driven ATC system supports this mission by providing accurate, consistent, and 
-            bias-free animal evaluation for Progeny Testing and Pedigree Selection programs.
+          <p className="text-[#6B7280] text-base leading-relaxed">
+            The Government of India's Rashtriya Gokul Mission aims to conserve and develop
+            indigenous bovine breeds, genetically upgrade the bovine population, and enhance
+            milk productivity. Our AI-driven ATC system supports this mission by providing
+            accurate, consistent, and bias-free animal evaluation for Progeny Testing and
+            Pedigree Selection programs.
           </p>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8 mt-20">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-gray-300">
-            © 2025 Animal Type Classification System | Ministry of Fisheries, Animal Husbandry & Dairying
+      <footer className="border-t border-[#E5E7EB] bg-white">
+        <div className="max-w-6xl mx-auto px-6 py-8 text-center">
+          <p className="text-sm text-[#9CA3AF]">
+            © 2025 Animal Type Classification System · Ministry of Fisheries, Animal Husbandry & Dairying
           </p>
         </div>
       </footer>

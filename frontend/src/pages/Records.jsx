@@ -208,7 +208,7 @@ const Records = () => {
   const [filterType, setFilterType] = useState('all');
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState(null);
-  
+
   // Image Modal State
   const [selectedAnimal, setSelectedAnimal] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -237,14 +237,14 @@ const Records = () => {
     let filtered = [...records];
 
     if (filterType !== 'all') {
-      filtered = filtered.filter(r => 
+      filtered = filtered.filter(r =>
         r.animalType?.toLowerCase() === filterType.toLowerCase()
       );
     }
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(r => 
+      filtered = filtered.filter(r =>
         r.animalId?.toLowerCase().includes(query) ||
         r.breed?.toLowerCase().includes(query) ||
         r.tagNumber?.toLowerCase().includes(query) ||
@@ -283,23 +283,23 @@ const Records = () => {
 
   // ====== Download Report ======
   const downloadReport = (record) => {
-    alert(`📄 Downloading report for ${record.tagNumber}...`);
+    alert(`Downloading report for ${record.tagNumber}...`);
   };
 
   // ====== Helper Functions ======
   const getScoreColor = (score) => {
-    if (score >= 90) return 'text-green-700 bg-green-100';
-    if (score >= 75) return 'text-blue-700 bg-blue-100';
-    if (score >= 60) return 'text-yellow-700 bg-yellow-100';
-    return 'text-orange-700 bg-orange-100';
+    if (score >= 90) return 'text-[#166534] bg-[#F0FDF4]';
+    if (score >= 75) return 'text-[#1D4ED8] bg-[#EFF6FF]';
+    if (score >= 60) return 'text-[#A16207] bg-[#FEFCE8]';
+    return 'text-[#C2410C] bg-[#FFF7ED]';
   };
 
   const getStatusColor = (status) => {
     const s = status?.toLowerCase();
-    if (s === 'completed') return 'text-green-700 bg-green-100';
-    if (s === 'under review') return 'text-orange-700 bg-orange-100';
-    if (s === 'pending') return 'text-yellow-700 bg-yellow-100';
-    return 'text-blue-700 bg-blue-100';
+    if (s === 'completed') return 'text-[#166534] bg-[#F0FDF4]';
+    if (s === 'under review') return 'text-[#C2410C] bg-[#FFF7ED]';
+    if (s === 'pending') return 'text-[#A16207] bg-[#FEFCE8]';
+    return 'text-[#1D4ED8] bg-[#EFF6FF]';
   };
 
   // ====== Stats ======
@@ -310,53 +310,51 @@ const Records = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center space-x-2 text-gray-700">
-            <button
-                           onClick={() => navigate('/dashboard')}
-                           className="flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all shadow-sm hover:shadow-md group"
-                         >
-                           <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-                           <span className="font-medium text-sm">Dashboard</span>
-                         </button>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-800">🐄 Animal Records</h1>
-          <div className="w-32"></div>
+    <div className="min-h-screen bg-[#FAFAF9]">
+      {/* Nav */}
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors"
+          >
+            <ArrowLeft size={16} />
+            Dashboard
+          </button>
+          <span className="text-sm font-semibold tracking-tight text-[#111827]">Animal Records</span>
+          <div className="w-24"></div>
         </div>
-      </header>
+      </nav>
 
-      <div className="container mx-auto px-6 py-8 max-w-7xl">
+      <div className="max-w-7xl mx-auto px-6 pt-12 pb-20">
         {/* Info Banner */}
-        <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-blue-800 text-sm">
-            💡 <strong>Tip:</strong> Click the <Eye size={14} className="inline mb-1" /> icon to view animal images. 
-            Use the <Copy size={14} className="inline mb-1" /> icon to copy Animal ID.
+        <div className="mb-6 bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl p-4">
+          <p className="text-[#1D4ED8] text-sm">
+            <strong>Tip:</strong> Click the <Eye size={14} className="inline mb-0.5" /> icon to view animal images.
+            Use the <Copy size={14} className="inline mb-0.5" /> icon to copy the record ID.
           </p>
         </div>
 
         {/* Search and Filter */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 mb-6">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+              <Search className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
               <input
                 type="text"
                 placeholder="Search by Animal ID, Tag, or Breed..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                className="w-full pl-10 pr-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none"
               />
             </div>
 
             <div className="relative">
-              <Filter className="absolute left-3 top-3 text-gray-400" size={20} />
+              <Filter className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none cursor-pointer"
+                className="w-full pl-10 pr-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none cursor-pointer"
               >
                 <option value="all">All Animals</option>
                 <option value="cattle">Cattle Only</option>
@@ -367,79 +365,79 @@ const Records = () => {
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-3xl font-bold text-green-700">{stats.total}</p>
-              <p className="text-sm text-gray-600 mt-1">Total</p>
+            <div className="text-center p-4 bg-[#F0FDF4] rounded-xl">
+              <p className="text-2xl font-semibold text-[#166534]">{stats.total}</p>
+              <p className="text-sm text-[#6B7280] mt-1">Total</p>
             </div>
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-3xl font-bold text-blue-700">{stats.cattle}</p>
-              <p className="text-sm text-gray-600 mt-1">Cattle</p>
+            <div className="text-center p-4 bg-[#EFF6FF] rounded-xl">
+              <p className="text-2xl font-semibold text-[#1D4ED8]">{stats.cattle}</p>
+              <p className="text-sm text-[#6B7280] mt-1">Cattle</p>
             </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <p className="text-3xl font-bold text-purple-700">{stats.buffalo}</p>
-              <p className="text-sm text-gray-600 mt-1">Buffalo</p>
+            <div className="text-center p-4 bg-[#F5F3FF] rounded-xl">
+              <p className="text-2xl font-semibold text-[#6D28D9]">{stats.buffalo}</p>
+              <p className="text-sm text-[#6B7280] mt-1">Buffalo</p>
             </div>
           </div>
         </div>
 
         {/* Records Table */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden">
           {loading ? (
-            <div className="p-12 text-center">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-              <p className="mt-4 text-gray-600">Loading records...</p>
+            <div className="p-16 text-center">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-[#166534] border-t-transparent"></div>
+              <p className="mt-4 text-sm text-[#6B7280]">Loading records...</p>
             </div>
           ) : filteredRecords.length === 0 ? (
-            <div className="p-12 text-center">
-              <Search size={48} className="mx-auto text-gray-400 mb-4" />
-              <p className="text-gray-600 text-lg font-medium">No records found</p>
+            <div className="p-16 text-center">
+              <Search size={40} className="mx-auto text-[#D1D5DB] mb-4" />
+              <p className="text-[#6B7280] font-medium">No records found</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b">
+                <thead className="bg-[#F9FAFB] border-b border-[#E5E7EB]">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Animal ID</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Tag</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Type</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Breed</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Center</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Score</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Record ID</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Tag</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Type</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Breed</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Center</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Score</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-[#E5E7EB]">
                   {filteredRecords.map((record) => (
-                    <tr key={record._id} className="hover:bg-gray-50">
+                    <tr key={record._id} className="hover:bg-[#F9FAFB] transition-colors">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <code className="text-xs bg-gray-100 px-2 py-1 rounded">
+                          <code className="text-xs bg-[#F3F4F6] text-[#374151] px-2 py-1 rounded">
                             {record._id.slice(0, 8)}...
                           </code>
                           <button
                             onClick={() => copyAnimalId(record._id)}
-                            className="p-1 hover:bg-green-100 rounded"
+                            className="p-1 hover:bg-[#F0FDF4] rounded"
                           >
                             {copiedId === record._id ? (
-                              <Check size={16} className="text-green-600" />
+                              <Check size={14} className="text-[#166534]" />
                             ) : (
-                              <Copy size={16} className="text-gray-500" />
+                              <Copy size={14} className="text-[#9CA3AF]" />
                             )}
                           </button>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-sm font-medium">{record.tagNumber}</td>
-                      <td className="px-4 py-3 text-sm capitalize">{record.animalType}</td>
-                      <td className="px-4 py-3 text-sm">{record.breed}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{record.center}</td>
+                      <td className="px-4 py-3 text-sm font-medium text-[#111827]">{record.tagNumber}</td>
+                      <td className="px-4 py-3 text-sm text-[#374151] capitalize">{record.animalType}</td>
+                      <td className="px-4 py-3 text-sm text-[#374151]">{record.breed}</td>
+                      <td className="px-4 py-3 text-sm text-[#6B7280]">{record.center}</td>
                       <td className="px-4 py-3">
                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getScoreColor(record.score)}`}>
                           {record.score}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(record.status)}`}>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(record.status)}`}>
                           {record.status}
                         </span>
                       </td>
@@ -447,24 +445,24 @@ const Records = () => {
                         <div className="flex gap-1">
                           <button
                             onClick={() => viewAnimalImage(record)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+                            className="p-2 text-[#1D4ED8] hover:bg-[#EFF6FF] rounded-lg transition-colors"
                             title="View Image"
                           >
-                            <Eye size={18} />
+                            <Eye size={16} />
                           </button>
                           <button
                             onClick={() => downloadReport(record)}
-                            className="p-2 text-green-600 hover:bg-green-50 rounded"
+                            className="p-2 text-[#166534] hover:bg-[#F0FDF4] rounded-lg transition-colors"
                             title="Download"
                           >
-                            <Download size={18} />
+                            <Download size={16} />
                           </button>
                           <button
                             onClick={() => deleteRecord(record._id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded"
+                            className="p-2 text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg transition-colors"
                             title="Delete"
                           >
-                            <Trash2 size={18} />
+                            <Trash2 size={16} />
                           </button>
                         </div>
                       </td>
@@ -477,7 +475,7 @@ const Records = () => {
         </div>
 
         {!loading && filteredRecords.length > 0 && (
-          <div className="mt-4 text-center text-sm text-gray-600">
+          <div className="mt-4 text-center text-sm text-[#9CA3AF]">
             Showing {filteredRecords.length} of {records.length} records
           </div>
         )}
@@ -485,34 +483,34 @@ const Records = () => {
 
       {/* Image Modal */}
       {showImageModal && selectedAnimal && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
+        <div
+          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
           onClick={closeImageModal}
         >
-          <div 
-            className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-auto shadow-2xl"
+          <div
+            className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-auto border border-[#E5E7EB]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-4 flex items-center justify-between sticky top-0">
+            <div className="bg-white border-b border-[#E5E7EB] px-6 py-4 flex items-center justify-between sticky top-0">
               <div>
-                <h2 className="text-2xl font-bold">{selectedAnimal.tagNumber}</h2>
-                <p className="text-green-100 text-sm">
-                  {selectedAnimal.breed} • {selectedAnimal.animalType}
+                <h2 className="text-lg font-semibold text-[#111827]">{selectedAnimal.tagNumber}</h2>
+                <p className="text-[#6B7280] text-sm">
+                  {selectedAnimal.breed} · {selectedAnimal.animalType}
                 </p>
               </div>
               <button
                 onClick={closeImageModal}
-                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg"
+                className="p-2 hover:bg-[#F9FAFB] rounded-lg text-[#6B7280]"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
 
             {/* Body */}
             <div className="p-6">
               {/* Image */}
-              <div className="mb-6 rounded-lg overflow-hidden shadow-lg">
+              <div className="mb-6 rounded-xl overflow-hidden border border-[#E5E7EB]">
                 <img
                   src={selectedAnimal.imageUrl}
                   alt={selectedAnimal.tagNumber}
@@ -522,25 +520,25 @@ const Records = () => {
 
               {/* Details */}
               <div className="grid md:grid-cols-2 gap-4 mb-6">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Animal ID</p>
-                  <p className="font-mono text-xs bg-white px-3 py-2 rounded border">
+                <div className="bg-[#F9FAFB] p-4 rounded-xl">
+                  <p className="text-xs text-[#9CA3AF] mb-1">Record ID</p>
+                  <p className="font-mono text-xs bg-white px-3 py-2 rounded-lg border border-[#E5E7EB] text-[#374151]">
                     {selectedAnimal._id}
                   </p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Score</p>
-                  <p className="text-2xl font-bold text-green-600">
+                <div className="bg-[#F9FAFB] p-4 rounded-xl">
+                  <p className="text-xs text-[#9CA3AF] mb-1">Score</p>
+                  <p className="text-2xl font-semibold text-[#166534]">
                     {selectedAnimal.score}/100
                   </p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Classification</p>
-                  <p className="text-lg font-semibold">{selectedAnimal.classification}</p>
+                <div className="bg-[#F9FAFB] p-4 rounded-xl">
+                  <p className="text-xs text-[#9CA3AF] mb-1">Classification</p>
+                  <p className="text-base font-semibold text-[#111827]">{selectedAnimal.classification}</p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-1">Center</p>
-                  <p className="text-lg font-semibold">{selectedAnimal.center}</p>
+                <div className="bg-[#F9FAFB] p-4 rounded-xl">
+                  <p className="text-xs text-[#9CA3AF] mb-1">Center</p>
+                  <p className="text-base font-semibold text-[#111827]">{selectedAnimal.center}</p>
                 </div>
               </div>
 
@@ -548,14 +546,14 @@ const Records = () => {
               <div className="flex gap-3">
                 <button
                   onClick={() => downloadReport(selectedAnimal)}
-                  className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-medium flex items-center justify-center gap-2"
+                  className="flex-1 bg-[#166534] text-white text-sm font-medium px-6 py-3 rounded-full hover:bg-[#14532D] transition-colors inline-flex items-center justify-center gap-2"
                 >
-                  <Download size={20} />
+                  <Download size={18} />
                   Download Report
                 </button>
                 <button
                   onClick={closeImageModal}
-                  className="px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+                  className="px-6 py-3 border border-[#E5E7EB] text-[#374151] text-sm font-medium rounded-full hover:bg-[#F9FAFB] transition-colors"
                 >
                   Close
                 </button>

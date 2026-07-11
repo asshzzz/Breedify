@@ -35,13 +35,13 @@ const Capture = () => {
     try {
       setError('');
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { 
-          facingMode: 'environment', 
-          width: { ideal: 1280 }, 
-          height: { ideal: 720 } 
+        video: {
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
         }
       });
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
         setStream(mediaStream);
@@ -67,10 +67,10 @@ const Capture = () => {
       const canvas = canvasRef.current;
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      
+
       const context = canvas.getContext('2d');
       context.drawImage(video, 0, 0);
-      
+
       const imageData = canvas.toDataURL('image/jpeg', 0.9); // 0.9 quality
       setCapturedImage(imageData);
       stopCamera();
@@ -102,7 +102,7 @@ const Capture = () => {
       // Step 1: Convert base64 to blob
       const response = await fetch(capturedImage);
       const blob = await response.blob();
-      
+
       // Step 2: Create FormData for image upload
       const formData = new FormData();
       formData.append('image', blob, `capture_${Date.now()}.jpg`);
@@ -128,11 +128,11 @@ const Capture = () => {
       const record = recordResponse.data || recordResponse;
 
       // Step 5: Navigate to result/detail page
-      navigate(`/records/${record._id || record.id}`, { 
-        state: { 
-          success: true, 
-          message: 'Image captured and uploaded successfully!' 
-        } 
+      navigate(`/records/${record._id || record.id}`, {
+        state: {
+          success: true,
+          message: 'Image captured and uploaded successfully!'
+        }
       });
 
     } catch (err) {
@@ -149,200 +149,199 @@ const Capture = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="flex items-center justify-between px-6 py-4">
-          <Link to="/dashboard" className="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
-            <ArrowLeft size={20} />
-            <span className="font-medium">Back to Dashboard</span>
+    <div className="min-h-screen bg-[#FAFAF9]">
+      {/* Nav */}
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link to="/dashboard" className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors">
+            <ArrowLeft size={16} />
+            Back
           </Link>
-          <h1 className="text-2xl font-bold text-gray-800">Capture Image</h1>
-          <div className="w-32"></div>
+          <span className="text-sm font-semibold tracking-tight text-[#111827]">Capture Image</span>
+          <div className="w-16"></div>
         </div>
-      </header>
+      </nav>
 
-      <div className="container mx-auto px-6 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Error Alert */}
-          {error && (
-            <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
-              <AlertCircle className="text-red-600 mt-0.5 flex-shrink-0" size={20} />
-              <div className="flex-1">
-                <p className="text-red-800 font-medium">Error</p>
-                <p className="text-red-600 text-sm mt-1">{error}</p>
-              </div>
-              <button 
-                onClick={() => setError('')}
-                className="text-red-400 hover:text-red-600"
-              >
-                <X size={20} />
-              </button>
+      <div className="max-w-4xl mx-auto px-6 pt-12 pb-20">
+        {/* Error Alert */}
+        {error && (
+          <div className="mb-6 bg-[#FEF2F2] border border-[#FCA5A5]/60 rounded-xl p-4 flex items-start gap-3">
+            <AlertCircle className="text-[#DC2626] mt-0.5 flex-shrink-0" size={18} />
+            <div className="flex-1">
+              <p className="text-[#991B1B] font-medium text-sm">Error</p>
+              <p className="text-[#DC2626] text-sm mt-1">{error}</p>
             </div>
-          )}
+            <button
+              onClick={() => setError('')}
+              className="text-[#DC2626]/60 hover:text-[#DC2626]"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        )}
 
-          {/* Animal Details Form */}
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Animal Details</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Animal Type <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={animalType}
-                  onChange={(e) => setAnimalType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                >
-                  <option value="cattle">Cattle</option>
-                  <option value="buffalo">Buffalo</option>
-                </select>
-              </div>
-              
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Tag Number <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={tagNumber}
-                  onChange={(e) => setTagNumber(e.target.value)}
-                  placeholder="Enter tag number"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                />
-              </div>
+        {/* Animal Details Form */}
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 mb-6">
+          <h2 className="text-lg font-semibold text-[#111827] mb-5">Animal Details</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[#374151] text-sm font-medium mb-2">
+                Animal Type <span className="text-[#DC2626]">*</span>
+              </label>
+              <select
+                value={animalType}
+                onChange={(e) => setAnimalType(e.target.value)}
+                className="w-full px-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none"
+              >
+                <option value="cattle">Cattle</option>
+                <option value="buffalo">Buffalo</option>
+              </select>
+            </div>
 
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Breed (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={breed}
-                  onChange={(e) => setBreed(e.target.value)}
-                  placeholder="Enter breed name"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                />
-              </div>
+            <div>
+              <label className="block text-[#374151] text-sm font-medium mb-2">
+                Tag Number <span className="text-[#DC2626]">*</span>
+              </label>
+              <input
+                type="text"
+                value={tagNumber}
+                onChange={(e) => setTagNumber(e.target.value)}
+                placeholder="Enter tag number"
+                className="w-full px-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none"
+              />
+            </div>
 
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2">
-                  Center (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={center}
-                  onChange={(e) => setCenter(e.target.value)}
-                  placeholder="Enter center name"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-                />
-              </div>
+            <div>
+              <label className="block text-[#374151] text-sm font-medium mb-2">
+                Breed (Optional)
+              </label>
+              <input
+                type="text"
+                value={breed}
+                onChange={(e) => setBreed(e.target.value)}
+                placeholder="Enter breed name"
+                className="w-full px-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[#374151] text-sm font-medium mb-2">
+                Center (Optional)
+              </label>
+              <input
+                type="text"
+                value={center}
+                onChange={(e) => setCenter(e.target.value)}
+                placeholder="Enter center name"
+                className="w-full px-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none"
+              />
             </div>
           </div>
+        </div>
 
-          {/* Camera Section */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Capture Photo</h2>
-            
-            <div className="relative bg-gray-900 rounded-lg overflow-hidden mb-6" style={{ aspectRatio: '16/9' }}>
-              {!capturedImage ? (
-                <>
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    playsInline
-                    muted
-                    className="w-full h-full object-cover"
-                  />
-                  {!cameraActive && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
-                      <div className="text-center text-white">
-                        <Camera size={48} className="mx-auto mb-4 opacity-50" />
-                        <p className="text-lg mb-2">Camera not started</p>
-                        <p className="text-sm text-gray-400">Click "Start Camera" to begin</p>
-                      </div>
+        {/* Camera Section */}
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+          <h2 className="text-lg font-semibold text-[#111827] mb-5">Capture Photo</h2>
+
+          <div className="relative bg-[#111827] rounded-xl overflow-hidden mb-6" style={{ aspectRatio: '16/9' }}>
+            {!capturedImage ? (
+              <>
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="w-full h-full object-cover"
+                />
+                {!cameraActive && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-[#1F2937]">
+                    <div className="text-center text-white">
+                      <Camera size={40} className="mx-auto mb-4 opacity-50" />
+                      <p className="text-sm font-medium mb-1">Camera not started</p>
+                      <p className="text-sm text-white/50">Click "Start Camera" to begin</p>
                     </div>
-                  )}
-                </>
-              ) : (
-                <img src={capturedImage} alt="Captured" className="w-full h-full object-cover" />
-              )}
-              <canvas ref={canvasRef} className="hidden" />
-            </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <img src={capturedImage} alt="Captured" className="w-full h-full object-cover" />
+            )}
+            <canvas ref={canvasRef} className="hidden" />
+          </div>
 
-            {/* Guidelines */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <h3 className="font-semibold text-blue-900 mb-2">📸 Photography Guidelines:</h3>
-              <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Ensure good lighting conditions (natural daylight preferred)</li>
-                <li>• Capture the animal from the side view for best results</li>
-                <li>• Keep the animal centered and fill most of the frame</li>
-                <li>• Avoid shadows, reflections, and obstructions</li>
-                <li>• Ensure the entire body is visible (head to tail)</li>
-                <li>• Keep the camera steady while capturing</li>
-              </ul>
-            </div>
+          {/* Guidelines */}
+          <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl p-4 mb-6">
+            <h3 className="font-medium text-[#1E3A8A] text-sm mb-2">Photography guidelines</h3>
+            <ul className="text-sm text-[#1D4ED8] space-y-1">
+              <li>• Ensure good lighting conditions (natural daylight preferred)</li>
+              <li>• Capture the animal from the side view for best results</li>
+              <li>• Keep the animal centered and fill most of the frame</li>
+              <li>• Avoid shadows, reflections, and obstructions</li>
+              <li>• Ensure the entire body is visible (head to tail)</li>
+              <li>• Keep the camera steady while capturing</li>
+            </ul>
+          </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap gap-4">
-              {!cameraActive && !capturedImage && (
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3">
+            {!cameraActive && !capturedImage && (
+              <button
+                onClick={startCamera}
+                className="flex-1 min-w-48 inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#166534] text-white text-sm font-medium rounded-full hover:bg-[#14532D] transition-colors"
+              >
+                <Camera size={18} />
+                <span>Start Camera</span>
+              </button>
+            )}
+
+            {cameraActive && !capturedImage && (
+              <>
                 <button
-                  onClick={startCamera}
-                  className="flex-1 min-w-48 flex items-center justify-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
+                  onClick={capturePhoto}
+                  className="flex-1 min-w-48 inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#166534] text-white text-sm font-medium rounded-full hover:bg-[#14532D] transition-colors"
                 >
-                  <Camera size={20} />
-                  <span>Start Camera</span>
+                  <Camera size={18} />
+                  <span>Capture Photo</span>
                 </button>
-              )}
+                <button
+                  onClick={handleCancel}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-[#E5E7EB] text-[#374151] text-sm font-medium rounded-full hover:bg-[#F9FAFB] transition-colors"
+                >
+                  <X size={18} />
+                  <span>Cancel</span>
+                </button>
+              </>
+            )}
 
-              {cameraActive && !capturedImage && (
-                <>
-                  <button
-                    onClick={capturePhoto}
-                    className="flex-1 min-w-48 flex items-center justify-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
-                  >
-                    <Camera size={20} />
-                    <span>Capture Photo</span>
-                  </button>
-                  <button
-                    onClick={handleCancel}
-                    className="flex items-center justify-center space-x-2 px-6 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
-                  >
-                    <X size={20} />
-                    <span>Cancel</span>
-                  </button>
-                </>
-              )}
-
-              {capturedImage && (
-                <>
-                  <button
-                    onClick={retakePhoto}
-                    disabled={processing}
-                    className="flex-1 min-w-48 flex items-center justify-center space-x-2 px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  >
-                    <RotateCw size={20} />
-                    <span>Retake Photo</span>
-                  </button>
-                  <button
-                    onClick={processImage}
-                    disabled={processing}
-                    className="flex-1 min-w-48 flex items-center justify-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  >
-                    {processing ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Processing...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Check size={20} />
-                        <span>Process & Upload</span>
-                      </>
-                    )}
-                  </button>
-                </>
-              )}
-            </div>
+            {capturedImage && (
+              <>
+                <button
+                  onClick={retakePhoto}
+                  disabled={processing}
+                  className="flex-1 min-w-48 inline-flex items-center justify-center gap-2 px-6 py-3 border border-[#E5E7EB] text-[#374151] text-sm font-medium rounded-full hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <RotateCw size={18} />
+                  <span>Retake Photo</span>
+                </button>
+                <button
+                  onClick={processImage}
+                  disabled={processing}
+                  className="flex-1 min-w-48 inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#166534] text-white text-sm font-medium rounded-full hover:bg-[#14532D] transition-colors disabled:bg-[#9CA3AF] disabled:cursor-not-allowed"
+                >
+                  {processing ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check size={18} />
+                      <span>Process &amp; Upload</span>
+                    </>
+                  )}
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
