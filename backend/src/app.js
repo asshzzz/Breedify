@@ -48,4 +48,4 @@ import settingsRoutes from './routes/setting.routes.js';
 app.use('/api/v1/settings', settingsRoutes);
 
 // ====== Export ======
-export { app };
+export default app ;

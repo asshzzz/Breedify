@@ -1,7 +1,7 @@
 // require('dotenv').config({path: './env'})  , breaks the consistency 
 import dotenv from 'dotenv'
 import connectDB from './db/index.js'
-import {app} from './app.js'
+import app from './app.js'
 
 dotenv.config({ //ye isiliye kaafi taaki dotenv ko import se laa ske require se nhi
     path: './.env'
