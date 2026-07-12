@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Camera, FileText, BarChart3, Database, ArrowRight } from 'lucide-react';
 import { isAuthenticated } from '../api';
+import breedifyLogo from '../assets/breedify_logo.png';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -43,15 +44,14 @@ const Home = () => {
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center items-center gap-2.5 -ml-3">
             <img
-              src="/logo.png"
-              alt="Logo"
-              className="h-8 w-8 object-contain"
-              onError={(e) => (e.target.style.display = 'none')}
+              src={breedifyLogo}
+              alt="Breedify Logo"
+              className="h-14 w-14 object-contain"
             />
-            <span className="text-lg font-semibold tracking-tight text-[#111827]">
-              ATC System
+            <span className="text-xl font-semibold tracking-tight text-[#111827]">
+              Breedify
             </span>
           </div>
 
