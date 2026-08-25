@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Eye, Search, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { recordAPI } from '../api';
-import breedifyLogo from '../assets/breedify_logo.png';
 
 const API_ORIGIN = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1').replace(/\/api\/v1$/, '');
 
@@ -47,11 +46,7 @@ const Records = () => {
   return (
     <div className="min-h-screen bg-[#FAFAF9]">
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <img src={breedifyLogo} alt="Logo" className="h-10 w-10 object-contain" />
-            <span className="text-lg font-semibold tracking-tight text-[#173B2D]">Breedify</span>
-          </div>
+        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-start">
           <button onClick={() => navigate('/dashboard')} className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#111827]">
             <ArrowLeft size={16} /> Dashboard
           </button>

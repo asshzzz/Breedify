@@ -42,7 +42,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-[#FAFAF9]">
       {/* Navigation */}
-      <nav className="absolute top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-white/30">
+      <nav className="absolute top-0 left-0 right-0 z-50 bg-white border-b border-[#E5E7EB]">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <img
