@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
 import { authAPI, setAuthToken, setUserData, isAuthenticated } from '../api';
+import breedifyLogo from '../assets/breedify_logo.png';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -64,12 +65,13 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center px-4 relative">
+      <div className="absolute top-4 left-4 flex items-center gap-2.5">
+        <img src={breedifyLogo} alt="Logo" className="h-14 w-14 object-contain" />
+        <span className="text-lg font-semibold tracking-tight text-[#111827]">Breedify</span>
+      </div>
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-block">
-            <span className="text-lg font-semibold tracking-tight text-[#111827]">ATC System</span>
-          </Link>
           <p className="text-[#6B7280] text-sm mt-2">Sign in to your account</p>
         </div>
 

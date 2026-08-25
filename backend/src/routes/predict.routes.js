@@ -2,6 +2,7 @@
 import express from 'express';
 import multer from 'multer';
 import { predictBreed } from "../controllers/predict.controller.js";
+import { verifyJWT } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
@@ -21,6 +22,6 @@ router.get('/test', (req, res) => {
 });
 
 // ✅ MAIN PREDICTION ROUTE
-router.post('/predict', upload.single('image'), predictBreed);
+router.post('/predict', verifyJWT, upload.single('image'), predictBreed);
 
 export default router;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Download, Calendar, TrendingUp, PieChart, RefreshCw, AlertCircle } from 'lucide-react';
 import { reportAPI, recordAPI } from '../api'; // ← Import API services
+import breedifyLogo from '../assets/breedify_logo.png';
 
 const Reports = () => {
   const [dateRange, setDateRange] = useState('month');
@@ -265,6 +266,10 @@ const Reports = () => {
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <img src={breedifyLogo} alt="Logo" className="h-10 w-10 object-contain" />
+            <span className="text-lg font-semibold tracking-tight text-[#111827]">Breedify</span>
+          </div>
           <Link to="/dashboard" className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors">
             <ArrowLeft size={16} />
             Back

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Camera, FileText, BarChart3, Database, ArrowRight } from 'lucide-react';
+import { Camera, FileText, BarChart3, Database, ArrowRight, ShieldCheck, Activity } from 'lucide-react';
 import { isAuthenticated } from '../api';
 import breedifyLogo from '../assets/breedify_logo.png';
 
@@ -42,17 +42,15 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-[#FAFAF9]">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center items-center gap-2.5 -ml-3">
+      <nav className="absolute top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-white/30">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
             <img
               src={breedifyLogo}
-              alt="Breedify Logo"
-              className="h-14 w-14 object-contain"
+              alt="Logo"
+              className="h-12 w-12 object-contain"
             />
-            <span className="text-xl font-semibold tracking-tight text-[#111827]">
-              Breedify
-            </span>
+            <span className="text-xl font-semibold tracking-tight text-[#173B2D]">Breedify</span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -60,7 +58,7 @@ const Home = () => {
               <>
                 <Link
                   to="/dashboard"
-                  className="text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors px-3 py-2"
+                  className="text-sm font-medium text-[#24483A] hover:text-[#111827] transition-colors px-3 py-2"
                 >
                   Dashboard
                 </Link>
@@ -79,7 +77,7 @@ const Home = () => {
               <>
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors px-3 py-2"
+                  className="text-sm font-medium text-[#24483A] hover:text-[#111827] transition-colors px-3 py-2"
                 >
                   Login
                 </Link>
@@ -96,54 +94,57 @@ const Home = () => {
       </nav>
 
       {/* Hero Section */}
-      <div className="max-w-6xl mx-auto px-6 pt-16 pb-20">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <p className="text-xs font-semibold tracking-[0.2em] text-[#166534] uppercase mb-4">
-              Rashtriya Gokul Mission
-            </p>
-            <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-[#111827] mb-6 leading-[1.15]">
-              AI-powered animal type classification
+      <section className="relative min-h-[680px] flex items-end overflow-hidden bg-[#173B2D]">
+        <img
+          src="https://images.pexels.com/photos/4577861/pexels-photo-4577861.jpeg?auto=compress&cs=tinysrgb&w=1800"
+          alt="Cattle grazing in a pasture"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-[#10261E]/65" />
+        <div className="relative max-w-7xl mx-auto w-full px-6 lg:px-10 pt-36 pb-16">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 border border-white/30 bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
+              <ShieldCheck size={15} /> Rashtriya Gokul Mission
+            </div>
+            <h1 className="mt-6 text-5xl md:text-7xl font-semibold tracking-tight text-white leading-[1.03]">
+              Better records.<br />Stronger herds.
             </h1>
-            <p className="text-base md:text-lg text-[#6B7280] mb-10 leading-relaxed">
-              An automated scoring system for cattle and buffaloes — standardizing animal
-              evaluation with consistent, AI-driven precision.
+            <p className="mt-6 max-w-xl text-base md:text-lg leading-relaxed text-white/80">
+              Make every animal evaluation more consistent with fast, AI-powered breed
+              identification and standardized scoring.
             </p>
             <button
               onClick={handleGetStarted}
-              className="inline-flex items-center gap-2 bg-[#166534] text-white text-sm font-medium px-6 py-3 rounded-full hover:bg-[#14532D] transition-colors"
+              className="mt-9 inline-flex items-center gap-3 bg-[#D5F36B] px-6 py-3.5 text-sm font-semibold text-[#173B2D] transition-colors hover:bg-white"
             >
-              Get started
-              <ArrowRight className="w-4 h-4" />
+              Start an evaluation <ArrowRight className="w-4 h-4" />
             </button>
           </div>
-
-          <div className="relative rounded-2xl overflow-hidden border border-[#E5E7EB] shadow-sm">
-            <img
-              src="https://images.pexels.com/photos/4577861/pexels-photo-4577861.jpeg?auto=compress&cs=tinysrgb&w=1200"
-              alt="Cattle grazing in a pasture"
-              className="w-full h-72 md:h-96 object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4">
-              <p className="text-white text-sm font-medium">
-                Standardized evaluation for indigenous breeds
-              </p>
-            </div>
+          <div className="mt-16 grid max-w-2xl grid-cols-3 border-t border-white/25 pt-5 text-white">
+            <div><p className="text-2xl font-semibold">AI</p><p className="mt-1 text-xs text-white/65">Assisted analysis</p></div>
+            <div><p className="text-2xl font-semibold">24/7</p><p className="mt-1 text-xs text-white/65">Ready to evaluate</p></div>
+            <div><p className="text-2xl font-semibold">1</p><p className="mt-1 text-xs text-white/65">Unified record</p></div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Features Grid */}
-      <div className="max-w-6xl mx-auto px-6 pb-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <section className="max-w-7xl mx-auto px-6 lg:px-10 py-20">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6B8E23]">One clear workflow</p>
+            <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-[#173B2D]">From image to insight.</h2>
+          </div>
+          <p className="max-w-md text-sm leading-relaxed text-[#66756D]">Everything your field team needs to capture, understand, and act on animal data.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {features.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
-              className="bg-white border border-[#E5E7EB] rounded-2xl p-6 hover:border-[#D1D5DB] hover:shadow-md transition-all duration-200"
+              className="bg-[#F4F7F0] border border-[#DCE7D5] p-6 hover:-translate-y-1 hover:border-[#9DBA87] hover:shadow-lg transition-all duration-200"
             >
-              <div className="w-11 h-11 rounded-xl bg-[#F0FDF4] flex items-center justify-center mb-5">
-                <Icon className="text-[#166534]" size={20} />
+              <div className="w-11 h-11 bg-[#D5F36B] flex items-center justify-center mb-8">
+                <Icon className="text-[#173B2D]" size={20} />
               </div>
               <h3 className="text-base font-semibold text-[#111827] mb-2">
                 {title}
@@ -154,29 +155,33 @@ const Home = () => {
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
       {/* About Section */}
-      <div className="max-w-6xl mx-auto px-6 pb-20">
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 md:p-12">
-          <h3 className="text-xl font-semibold text-[#111827] mb-4">
+      <section className="bg-[#173B2D] text-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 md:py-20 grid md:grid-cols-[1fr_1.5fr] gap-10 items-start">
+          <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-4">
             About Rashtriya Gokul Mission
           </h3>
-          <p className="text-[#6B7280] text-base leading-relaxed">
+          <p className="text-white/70 text-base leading-relaxed">
             The Government of India's Rashtriya Gokul Mission aims to conserve and develop
             indigenous bovine breeds, genetically upgrade the bovine population, and enhance
-            milk productivity. Our AI-driven ATC system supports this mission by providing
+            milk productivity. Our AI-driven classification supports this mission by providing
             accurate, consistent, and bias-free animal evaluation for Progeny Testing and
             Pedigree Selection programs.
           </p>
         </div>
-      </div>
+      </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#E5E7EB] bg-white">
-        <div className="max-w-6xl mx-auto px-6 py-8 text-center">
-          <p className="text-sm text-[#9CA3AF]">
-            © 2025 Animal Type Classification System · Ministry of Fisheries, Animal Husbandry & Dairying
+      <footer className="bg-[#10261E]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-white">
+            <Activity size={16} className="text-[#D5F36B]" />
+            <span className="text-sm font-medium">Field intelligence, made practical.</span>
+          </div>
+          <p className="text-right text-xs text-white/45">
+            © 2025 · Ministry of Fisheries, Animal Husbandry & Dairying
           </p>
         </div>
       </footer>

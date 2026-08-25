@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, Phone, MapPin, AlertCircle, CheckCircle } from 'lucide-react';
 import { authAPI, isAuthenticated } from '../api.js';
+import breedifyLogo from '../assets/breedify_logo.png';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -121,12 +122,13 @@ const Register = () => {
     "w-full pl-10 pr-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none transition-colors";
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] py-16 px-4">
+    <div className="min-h-screen bg-[#FAFAF9] py-16 px-4 relative">
+      <div className="absolute top-4 left-4 flex items-center gap-2.5">
+        <img src={breedifyLogo} alt="Logo" className="h-14 w-14 object-contain" />
+        <span className="text-lg font-semibold tracking-tight text-[#111827]">Breedify</span>
+      </div>
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-block">
-            <span className="text-lg font-semibold tracking-tight text-[#111827]">ATC System</span>
-          </Link>
           <p className="text-[#6B7280] text-sm mt-2">Create your account</p>
         </div>
 

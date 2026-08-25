@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Camera, RotateCw, Check, X, ArrowLeft, AlertCircle } from 'lucide-react';
-import { imageAPI, recordAPI, isAuthenticated } from '../api';
+import { isAuthenticated } from '../api';
 
 const Capture = () => {
   const navigate = useNavigate();
@@ -11,10 +11,7 @@ const Capture = () => {
   const [stream, setStream] = useState(null);
   const [capturedImage, setCapturedImage] = useState(null);
   const [cameraActive, setCameraActive] = useState(false);
-  const [animalType, setAnimalType] = useState('cattle');
-  const [tagNumber, setTagNumber] = useState('');
-  const [breed, setBreed] = useState('');
-  const [center, setCenter] = useState('');
+  const [result, setResult] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
 
@@ -79,17 +76,12 @@ const Capture = () => {
 
   const retakePhoto = () => {
     setCapturedImage(null);
+    setResult(null);
     setError('');
     startCamera();
   };
 
   const processImage = async () => {
-    // Validation
-    if (!tagNumber.trim()) {
-      setError('Please enter Tag Number');
-      return;
-    }
-
     if (!capturedImage) {
       setError('Please capture an image first');
       return;
@@ -100,40 +92,24 @@ const Capture = () => {
 
     try {
       // Step 1: Convert base64 to blob
-      const response = await fetch(capturedImage);
-      const blob = await response.blob();
+      const imageResponse = await fetch(capturedImage);
+      const blob = await imageResponse.blob();
 
-      // Step 2: Create FormData for image upload
+      // Send the captured image directly to prediction and record storage.
       const formData = new FormData();
       formData.append('image', blob, `capture_${Date.now()}.jpg`);
 
-      // Step 3: Upload image to backend
-      const uploadResponse = await imageAPI.upload(formData);
-      const imageData = uploadResponse.data || uploadResponse;
-
-      // Step 4: Create animal record with uploaded image
-      const recordData = {
-        animalType: animalType,
-        tagNumber: tagNumber,
-        breed: breed || undefined,
-        center: center || undefined,
-        imageUrl: imageData.url || imageData.imageUrl,
-        imageId: imageData._id || imageData.id,
-        status: 'pending', // Initial status
-        captureMethod: 'camera',
-        capturedAt: new Date().toISOString()
-      };
-
-      const recordResponse = await recordAPI.create(recordData);
-      const record = recordResponse.data || recordResponse;
-
-      // Step 5: Navigate to result/detail page
-      navigate(`/records/${record._id || record.id}`, {
-        state: {
-          success: true,
-          message: 'Image captured and uploaded successfully!'
-        }
+      const apiOrigin = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1').replace(/\/api\/v1$/, '');
+      const response = await fetch(`${apiOrigin}/api/breed/predict`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        body: formData
       });
+      const responseData = await response.json();
+      if (!response.ok || !responseData.success) {
+        throw new Error(responseData.error || 'Prediction failed');
+      }
+      setResult(responseData.data);
 
     } catch (err) {
       console.error('Error processing image:', err);
@@ -152,13 +128,11 @@ const Capture = () => {
     <div className="min-h-screen bg-[#FAFAF9]">
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-start">
           <Link to="/dashboard" className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors">
             <ArrowLeft size={16} />
             Back
           </Link>
-          <span className="text-sm font-semibold tracking-tight text-[#111827]">Capture Image</span>
-          <div className="w-16"></div>
         </div>
       </nav>
 
@@ -179,65 +153,6 @@ const Capture = () => {
             </button>
           </div>
         )}
-
-        {/* Animal Details Form */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 mb-6">
-          <h2 className="text-lg font-semibold text-[#111827] mb-5">Animal Details</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[#374151] text-sm font-medium mb-2">
-                Animal Type <span className="text-[#DC2626]">*</span>
-              </label>
-              <select
-                value={animalType}
-                onChange={(e) => setAnimalType(e.target.value)}
-                className="w-full px-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none"
-              >
-                <option value="cattle">Cattle</option>
-                <option value="buffalo">Buffalo</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-[#374151] text-sm font-medium mb-2">
-                Tag Number <span className="text-[#DC2626]">*</span>
-              </label>
-              <input
-                type="text"
-                value={tagNumber}
-                onChange={(e) => setTagNumber(e.target.value)}
-                placeholder="Enter tag number"
-                className="w-full px-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[#374151] text-sm font-medium mb-2">
-                Breed (Optional)
-              </label>
-              <input
-                type="text"
-                value={breed}
-                onChange={(e) => setBreed(e.target.value)}
-                placeholder="Enter breed name"
-                className="w-full px-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[#374151] text-sm font-medium mb-2">
-                Center (Optional)
-              </label>
-              <input
-                type="text"
-                value={center}
-                onChange={(e) => setCenter(e.target.value)}
-                placeholder="Enter center name"
-                className="w-full px-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none"
-              />
-            </div>
-          </div>
-        </div>
 
         {/* Camera Section */}
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
@@ -336,13 +251,26 @@ const Capture = () => {
                   ) : (
                     <>
                       <Check size={18} />
-                      <span>Process &amp; Upload</span>
+                      <span>Predict breed</span>
                     </>
                   )}
                 </button>
               </>
             )}
           </div>
+
+          {result && (
+            <div className="mt-6 border border-[#DCE7D5] bg-[#F7FAF4] p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6B8E23]">Prediction saved</p>
+              <h3 className="mt-2 text-2xl font-semibold text-[#173B2D]">{result.breed}</h3>
+              <p className="mt-2 text-sm text-[#66756D]">
+                Cattle number: <span className="font-semibold text-[#173B2D]">{result.record?.animalId}</span>
+              </p>
+              <button onClick={() => navigate('/records')} className="mt-4 text-sm font-semibold text-[#166534] hover:text-[#14532D]">
+                View saved records →
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

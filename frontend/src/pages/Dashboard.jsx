@@ -1,18 +1,14 @@
 // src/pages/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Camera, FileText, BarChart3, Settings, LogOut, Menu, X, Upload, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Camera, FileText, LogOut, Menu, X, Upload, AlertCircle, ArrowLeft, ArrowRight, Settings } from 'lucide-react';
 import { authAPI, recordAPI, clearAuthData, isAuthenticated, getUserData } from '../api';
+import breedifyLogo from '../assets/breedify_logo.png';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [stats, setStats] = useState({
-    totalClassifications: 0,
-    pendingReviews: 0,
-    completedToday: 0,
-    accuracy: 0
-  });
+  const [totalRecords, setTotalRecords] = useState(0);
   const [recentRecords, setRecentRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -46,8 +42,7 @@ const Dashboard = () => {
       const allRecords = await recordAPI.getAll();
       const records = allRecords.data || allRecords;
 
-      // Calculate stats from records
-      calculateStats(records);
+      setTotalRecords(Array.isArray(records) ? records.length : 0);
 
       // Get recent 3 records
       const recent = records.slice(0, 3);
@@ -67,41 +62,6 @@ const Dashboard = () => {
     }
   };
 
-  const calculateStats = (records) => {
-    if (!Array.isArray(records)) return;
-
-    const total = records.length;
-
-    // Count pending reviews (status: 'pending' or 'under_review')
-    const pending = records.filter(r =>
-      r.status === 'pending' || r.status === 'under_review'
-    ).length;
-
-    // Count completed today
-    const today = new Date().toDateString();
-    const completedToday = records.filter(r => {
-      const recordDate = new Date(r.createdAt || r.created_at).toDateString();
-      return recordDate === today && r.status === 'completed';
-    }).length;
-
-    // Calculate average accuracy (if confidence scores exist)
-    let avgAccuracy = 0;
-    const recordsWithConfidence = records.filter(r => r.confidence || r.classificationScore);
-    if (recordsWithConfidence.length > 0) {
-      const totalConfidence = recordsWithConfidence.reduce((sum, r) =>
-        sum + (r.confidence || r.classificationScore || 0), 0
-      );
-      avgAccuracy = Math.round(totalConfidence / recordsWithConfidence.length);
-    }
-
-    setStats({
-      totalClassifications: total,
-      pendingReviews: pending,
-      completedToday: completedToday,
-      accuracy: avgAccuracy
-    });
-  };
-
   const handleLogout = async () => {
     try {
       // Call logout API (optional, token will be invalidated)
@@ -112,20 +72,6 @@ const Dashboard = () => {
       // Clear local data regardless
       clearAuthData();
       navigate('/login');
-    }
-  };
-
-  const getStatusStyle = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'completed':
-        return 'bg-[#ECFDF5] text-[#166534]';
-      case 'pending':
-      case 'under_review':
-        return 'bg-[#FFF7ED] text-[#C2410C]';
-      case 'rejected':
-        return 'bg-[#FEF2F2] text-[#DC2626]';
-      default:
-        return 'bg-[#F3F4F6] text-[#6B7280]';
     }
   };
 
@@ -146,19 +92,6 @@ const Dashboard = () => {
     return date.toLocaleDateString();
   };
 
-  const statCards = [
-    { label: 'Total Classifications', value: stats.totalClassifications, note: 'All time records', icon: FileText },
-    { label: 'Pending Reviews', value: stats.pendingReviews, note: 'Awaiting verification', icon: Camera },
-    { label: 'Completed Today', value: stats.completedToday, note: "Today's progress", icon: BarChart3 },
-    { label: 'Accuracy Rate', value: `${stats.accuracy}%`, note: 'AI prediction rate', icon: Settings },
-  ];
-
-  const quickActions = [
-    { to: '/capture', icon: Camera, title: 'Capture New', description: 'Take photo for classification' },
-    { to: '/upload', icon: Upload, title: 'Upload Image', description: 'Process existing photos' },
-    { to: '/records', icon: FileText, title: 'View Records', description: 'Browse all classifications' },
-  ];
-
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center">
@@ -176,7 +109,10 @@ const Dashboard = () => {
       <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-[#E5E7EB] transition-transform duration-300`}>
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
-            <span className="text-lg font-semibold tracking-tight text-[#111827]">ATC System</span>
+            <div className="flex items-center gap-2.5">
+              <img src={breedifyLogo} alt="Logo" className="h-14 w-14 object-contain" />
+              <span className="text-lg font-semibold tracking-tight text-[#111827]">Breedify</span>
+            </div>
             <button onClick={() => setSidebarOpen(false)} className="md:hidden text-[#6B7280]">
               <X size={20} />
             </button>
@@ -184,24 +120,12 @@ const Dashboard = () => {
 
           <nav className="space-y-1">
             <Link to="/dashboard" className="flex items-center gap-3 px-3.5 py-2.5 bg-[#F0FDF4] text-[#166534] rounded-lg text-sm font-medium">
-              <BarChart3 size={18} />
-              Dashboard
-            </Link>
-            <Link to="/capture" className="flex items-center gap-3 px-3.5 py-2.5 text-[#374151] hover:bg-[#F9FAFB] rounded-lg text-sm font-medium transition-colors">
-              <Camera size={18} />
-              Capture Image
-            </Link>
-            <Link to="/upload" className="flex items-center gap-3 px-3.5 py-2.5 text-[#374151] hover:bg-[#F9FAFB] rounded-lg text-sm font-medium transition-colors">
-              <Upload size={18} />
-              Upload Image
+              <FileText size={18} />
+              Image prediction
             </Link>
             <Link to="/records" className="flex items-center gap-3 px-3.5 py-2.5 text-[#374151] hover:bg-[#F9FAFB] rounded-lg text-sm font-medium transition-colors">
               <FileText size={18} />
               Records
-            </Link>
-            <Link to="/reports" className="flex items-center gap-3 px-3.5 py-2.5 text-[#374151] hover:bg-[#F9FAFB] rounded-lg text-sm font-medium transition-colors">
-              <BarChart3 size={18} />
-              Reports
             </Link>
             <Link to="/settings" className="flex items-center gap-3 px-3.5 py-2.5 text-[#374151] hover:bg-[#F9FAFB] rounded-lg text-sm font-medium transition-colors">
               <Settings size={18} />
@@ -236,7 +160,7 @@ const Dashboard = () => {
                 Home
               </button>
 
-              <h2 className="text-lg font-semibold text-[#111827]">Dashboard</h2>
+              <h2 className="text-lg font-semibold text-[#111827]">Breed prediction</h2>
             </div>
 
             <div className="flex items-center gap-3">
@@ -272,47 +196,38 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-            {statCards.map(({ label, value, note, icon: Icon }) => (
-              <div key={label} className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-[#6B7280] text-sm font-medium">{label}</h3>
-                  <div className="w-10 h-10 bg-[#F0FDF4] rounded-full flex items-center justify-center">
-                    <Icon className="text-[#166534]" size={18} />
-                  </div>
-                </div>
-                <p className="text-2xl font-semibold text-[#111827]">{value}</p>
-                <p className="text-sm text-[#9CA3AF] mt-1.5">{note}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Quick Actions */}
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 mb-8">
-            <h3 className="text-base font-semibold text-[#111827] mb-5">Quick Actions</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {quickActions.map(({ to, icon: Icon, title, description }) => (
-                <Link
-                  key={to}
-                  to={to}
-                  className="flex items-center gap-4 p-4 border border-[#E5E7EB] hover:border-[#D1D5DB] hover:bg-[#F9FAFB] rounded-xl transition-colors"
-                >
-                  <div className="w-11 h-11 bg-[#166534] rounded-lg flex items-center justify-center shrink-0">
-                    <Icon className="text-white" size={20} />
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-sm text-[#111827]">{title}</h4>
-                    <p className="text-sm text-[#6B7280]">{description}</p>
-                  </div>
-                </Link>
-              ))}
+          {/* Prediction Actions */}
+          <section className="mb-8 bg-[#173B2D] p-6 md:p-8 text-white">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D5F36B]">Cattle breed prediction</p>
+              <h1 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">Turn a cattle photo into a saved record.</h1>
+              <p className="mt-3 text-sm md:text-base leading-relaxed text-white/70">Capture a new photo or upload one from your device to identify the breed and save the result.</p>
             </div>
+            <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Link to="/capture" className="flex items-center justify-between gap-4 bg-[#D5F36B] px-5 py-4 text-sm font-semibold text-[#173B2D] hover:bg-white transition-colors">
+                <span className="flex items-center gap-3"><Camera size={19} /> Capture a photo</span>
+                <ArrowRight size={18} />
+              </Link>
+              <Link to="/upload" className="flex items-center justify-between gap-4 border border-white/30 px-5 py-4 text-sm font-semibold text-white hover:bg-white/10 transition-colors">
+                <span className="flex items-center gap-3"><Upload size={19} /> Upload an image</span>
+                <ArrowRight size={18} />
+              </Link>
+            </div>
+          </section>
+
+          <div className="mb-8 flex items-center justify-between border-b border-[#E5E7EB] pb-5">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6B8E23]">Saved data</p>
+              <h3 className="mt-1 text-xl font-semibold text-[#173B2D]">Your cattle records <span className="text-[#6B8E23]">({totalRecords})</span></h3>
+            </div>
+            <Link to="/records" className="inline-flex items-center gap-2 text-sm font-semibold text-[#166534] hover:text-[#14532D]">
+              View all <ArrowRight size={16} />
+            </Link>
           </div>
 
-          {/* Recent Activity */}
+          {/* Recent Saved Predictions */}
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
-            <h3 className="text-base font-semibold text-[#111827] mb-5">Recent Classifications</h3>
+            <h3 className="text-base font-semibold text-[#111827] mb-5">Recent breed predictions</h3>
             <div className="space-y-3">
               {recentRecords.length > 0 ? (
                 recentRecords.map((record) => (
@@ -343,9 +258,6 @@ const Dashboard = () => {
                         </p>
                       </div>
                     </div>
-                    <span className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusStyle(record.status)}`}>
-                      {record.status || 'Unknown'}
-                    </span>
                   </div>
                 ))
               ) : (

@@ -10,7 +10,7 @@ const UploadImage = () => {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
 
-  const API_BASE_URL = "http://localhost:8000/api/breed/predict";
+  const API_BASE_URL = `${import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1"}`.replace(/\/api\/v1$/, "") + "/api/breed/predict";
 
   const handleFileSelect = (file) => {
     setError("");
@@ -54,6 +54,9 @@ const UploadImage = () => {
 
       const response = await fetch(API_BASE_URL, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         body: formData,
       });
 
@@ -65,6 +68,7 @@ const UploadImage = () => {
 
       if (responseData.success && responseData.data) {
         setResult({
+          animalId: responseData.data.record.animalId,
           breed: responseData.data.breed,
           confidence: responseData.data.confidence,
           message: responseData.data.message,
@@ -83,7 +87,7 @@ const UploadImage = () => {
     <div className="min-h-screen bg-[#FAFAF9]">
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-start">
           <button
             onClick={() => navigate('/dashboard')}
             className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors"
@@ -91,9 +95,6 @@ const UploadImage = () => {
             <ArrowLeft size={16} />
             Back
           </button>
-          <span className="text-sm font-semibold tracking-tight text-[#111827]">
-            ATC System
-          </span>
         </div>
       </nav>
 
@@ -180,6 +181,11 @@ const UploadImage = () => {
                 <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-4">
                   <span className="text-[#6B7280] text-sm">Detected breed</span>
                   <span className="text-lg font-semibold text-[#111827]">{result.breed}</span>
+                </div>
+
+                <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-4">
+                  <span className="text-[#6B7280] text-sm">Cattle number</span>
+                  <span className="text-sm font-semibold text-[#166534]">{result.animalId}</span>
                 </div>
 
                 <div className="flex items-center justify-between">

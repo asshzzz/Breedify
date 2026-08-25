@@ -172,8 +172,9 @@ export const getUserById = async (req, res) => {
 // 🆕 Update User Profile
 export const updateUser = async (req, res) => {
   try {
-    const { name, email } = req.body;
-    const userId = req.user.id; // req.user.id use karo (not _id)
+    const name = req.body.name?.trim();
+    const email = req.body.email?.trim();
+    const userId = req.user._id;
 
     console.log('📝 Update Request:', { name, email, userId });
     console.log('👤 Current User Email:', req.user.email);

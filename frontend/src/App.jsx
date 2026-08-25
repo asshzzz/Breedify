@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import AppSidebar from './components/AppSidebar';
 
 // Import all pages
 import Home from './pages/Home';
@@ -16,7 +17,9 @@ import Settings from './pages/Settings';
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" />;
+  const location = useLocation();
+  if (!token) return <Navigate to="/login" />;
+  return location.pathname === '/dashboard' ? children : <AppSidebar>{children}</AppSidebar>;
 };
 
 function App() {

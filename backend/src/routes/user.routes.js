@@ -20,6 +20,7 @@ router.post("/login", loginUser);
 // ====== Protected Routes (Login Required) ======
 router.post("/logout", verifyJWT, logoutUser);              // ✅ Changed
 router.get("/profile", verifyJWT, getUserProfile);          // ✅ Changed
+router.put("/profile", verifyJWT, updateUser);              // Update own profile
 
 // ====== Admin Only Routes ======
 router.get("/all", verifyJWT, isAdmin, getAllUsers);        // ✅ Changed

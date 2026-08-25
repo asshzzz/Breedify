@@ -1,6 +1,20 @@
 // src/controllers/predict.controller.js
 import dotenv from "dotenv";
+import fs from "fs/promises";
+import path from "path";
+import crypto from "crypto";
+import { AnimalRecord } from "../models/record.model.js";
 dotenv.config();
+
+const uploadDirectory = path.join(process.cwd(), "public", "uploads");
+
+const createAnimalNumber = async () => {
+  let animalId;
+  do {
+    animalId = `COW-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString("hex").toUpperCase()}`;
+  } while (await AnimalRecord.exists({ animalId }));
+  return animalId;
+};
 
 export const predictBreed = async (req, res) => {
   try {
@@ -113,12 +127,36 @@ export const predictBreed = async (req, res) => {
       });
     }
 
+    await fs.mkdir(uploadDirectory, { recursive: true });
+    const extension = path.extname(req.file.originalname) || ".jpg";
+    const fileName = `${Date.now()}-${crypto.randomBytes(8).toString("hex")}${extension}`;
+    await fs.writeFile(path.join(uploadDirectory, fileName), req.file.buffer);
+
+    const animalId = await createAnimalNumber();
+    const record = await AnimalRecord.create({
+      animalId,
+      tagNumber: animalId,
+      animalType: "cattle",
+      breed,
+      ownerName: req.user.name,
+      center: "Breedify",
+      images: [{ imageType: "other", imageUrl: `/uploads/${fileName}` }],
+      aiAnalysis: {
+        confidence: confidence ? Number((confidence * 100).toFixed(2)) : undefined,
+        analyzedAt: new Date(),
+        status: "completed"
+      },
+      status: "evaluated",
+      createdBy: req.user._id
+    });
+
     // ✅ SUCCESS
     console.log("✅ Successfully detected breed:", breed);
     
     return res.status(200).json({
       success: true,
       data: {
+        record,
         breed: breed,
         confidence: confidence ? (confidence * 100).toFixed(2) : "N/A",
         message: `Detected: ${breed}${

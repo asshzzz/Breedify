@@ -49,7 +49,7 @@ router.post("/", verifyJWT, async (req, res) => {
 // Get all records
 router.get("/", verifyJWT, async (req, res) => {
   try {
-    const records = await AnimalRecord.find()
+    const records = await AnimalRecord.find({ createdBy: req.user._id })
       .populate('createdBy', 'name email')
       .sort({ createdAt: -1 });
 

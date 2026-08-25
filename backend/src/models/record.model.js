@@ -10,7 +10,7 @@ const animalRecordSchema = new mongoose.Schema({
   },
   tagNumber: {
     type: String,
-    required: true,
+    required: false,
     trim: true
   },
   animalType: {
@@ -26,7 +26,7 @@ const animalRecordSchema = new mongoose.Schema({
   sex: {
     type: String,
     enum: ['male', 'female'],
-    required: true
+    required: false
   },
   dateOfBirth: Date,
   age: {
@@ -37,7 +37,7 @@ const animalRecordSchema = new mongoose.Schema({
   // Owner Information
   ownerName: {
     type: String,
-    required: true,
+    required: false,
     trim: true
   },
   ownerContact: String,
@@ -51,7 +51,7 @@ const animalRecordSchema = new mongoose.Schema({
   // Location Information
   center: {
     type: String,
-    required: true
+    required: false
   },
   station: String,
   
