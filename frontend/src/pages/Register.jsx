@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, Phone, MapPin, AlertCircle, CheckCircle } from 'lucide-react';
+import { User, Mail, Lock, Phone, AlertCircle, CheckCircle } from 'lucide-react';
 import { authAPI, isAuthenticated } from '../api.js';
 import breedifyLogo from '../assets/breedify_logo.png';
 
@@ -11,9 +11,7 @@ const Register = () => {
     email: '',
     phone: '',
     password: '',
-    confirmPassword: '',
-    role: 'user',
-    location: ''
+    confirmPassword: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -68,12 +66,6 @@ const Register = () => {
       return false;
     }
 
-    // Location validation
-    if (formData.location.trim().length < 2) {
-      setError('Please enter a valid location');
-      return false;
-    }
-
     return true;
   };
 
@@ -87,8 +79,8 @@ const Register = () => {
     setLoading(true);
 
     try {
-      // Prepare data for backend (remove confirmPassword)
-      const { confirmPassword, ...registrationData } = formData;
+      const { name, email, phone, password } = formData;
+      const registrationData = { name, email, phone, password };
 
       // Call register API from api.js
       const response = await authAPI.register(registrationData);
@@ -102,9 +94,7 @@ const Register = () => {
           email: '',
           phone: '',
           password: '',
-          confirmPassword: '',
-          role: 'user',
-          location: ''
+          confirmPassword: ''
         });
 
         // Redirect to login after 2 seconds
@@ -206,43 +196,6 @@ const Register = () => {
                     required
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-[#374151] text-sm font-medium mb-2">
-                  Location <span className="text-[#DC2626]">*</span>
-                </label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-3.5 text-[#9CA3AF]" size={18} />
-                  <input
-                    type="text"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleChange}
-                    className={inputClass}
-                    placeholder="City, State"
-                    disabled={loading}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[#374151] text-sm font-medium mb-2">
-                  Role <span className="text-[#DC2626]">*</span>
-                </label>
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 text-sm border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#166534]/30 focus:border-[#166534] outline-none transition-colors"
-                  disabled={loading}
-                  required
-                >
-                  <option value="user">user</option>
-                  <option value="admin">Admin</option>
-                  <option value="Evaluator">Evaluator</option>
-                </select>
               </div>
 
               <div>
