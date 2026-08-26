@@ -4,10 +4,15 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
+const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 // ====== Middlewares (PEHLE ye aane chahiye) ======
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // ← ADDED
     allowedHeaders: ['Content-Type', 'Authorization'], // ← ADDED
