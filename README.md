@@ -1,4 +1,4 @@
-# ATC System — Animal Type Classification
+# Breedify — Cattle Breed Prediction 
 
 An AI-powered animal type classification system for cattle and buffaloes, built to support the **Rashtriya Gokul Mission** (Ministry of Fisheries, Animal Husbandry & Dairying, Government of India). The system standardizes animal evaluation for Progeny Testing and Pedigree Selection by replacing manual scoring with consistent, AI-driven breed identification and body-structure analysis.
 
