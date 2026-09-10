@@ -31,12 +31,14 @@ import userRouter from "./routes/user.routes.js";
 import imageRouter from "./routes/image.routes.js";
 import recordRouter from "./routes/record.routes.js";
 import predictRoute from './routes/predict.routes.js';
+import listingRouter from './routes/listing.routes.js';
 
 // ====== Routes Declaration ======
 app.use("/api/v1/report", reportRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/images", imageRouter);
 app.use("/api/v1/records", recordRouter);
+app.use("/api/v1/listings", listingRouter);
 
 // ====== Root Endpoint ======
 app.get("/", (req, res) => {

@@ -106,41 +106,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-[#FAFAF9] flex">
       {/* Sidebar */}
-      <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-[#E5E7EB] transition-transform duration-300`}>
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2.5">
-              <img src={breedifyLogo} alt="Logo" className="h-14 w-14 object-contain" />
-              <span className="text-lg font-semibold tracking-tight text-[#111827]">Breedify</span>
-            </div>
-            <button onClick={() => setSidebarOpen(false)} className="md:hidden text-[#6B7280]">
-              <X size={20} />
-            </button>
-          </div>
-
-          <nav className="space-y-1">
-            <Link to="/dashboard" className="flex items-center gap-3 px-3.5 py-2.5 bg-[#F0FDF4] text-[#166534] rounded-lg text-sm font-medium">
-              <FileText size={18} />
-              Image prediction
-            </Link>
-            <Link to="/records" className="flex items-center gap-3 px-3.5 py-2.5 text-[#374151] hover:bg-[#F9FAFB] rounded-lg text-sm font-medium transition-colors">
-              <FileText size={18} />
-              Records
-            </Link>
-            <Link to="/settings" className="flex items-center gap-3 px-3.5 py-2.5 text-[#374151] hover:bg-[#F9FAFB] rounded-lg text-sm font-medium transition-colors">
-              <Settings size={18} />
-              Settings
-            </Link>
-          </nav>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-[#E5E7EB]">
-          <button onClick={handleLogout} className="flex items-center gap-3 px-3.5 py-2.5 text-[#DC2626] hover:bg-[#FEF2F2] rounded-lg text-sm font-medium transition-colors w-full">
-            <LogOut size={18} />
-            Logout
-          </button>
-        </div>
-      </aside>
+    
 
       {/* Main Content */}
       <div className="flex-1 min-w-0">

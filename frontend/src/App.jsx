@@ -13,13 +13,15 @@ import Result from './pages/Result';
 import Records from './pages/Records';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import SellAnimal from './pages/SellAnimal';
+import MyListings from './pages/MyListings';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   const location = useLocation();
   if (!token) return <Navigate to="/login" />;
-  return location.pathname === '/dashboard' ? children : <AppSidebar>{children}</AppSidebar>;
+  return children ;
 };
 
 function App() {
@@ -88,6 +90,8 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        <Route path="/sell" element={<ProtectedRoute><SellAnimal /></ProtectedRoute>} />
+        <Route path="/my-listings" element={<ProtectedRoute><MyListings /></ProtectedRoute>} />
 
         {/* Fallback Route */}
         <Route path="*" element={<Navigate to="/" />} />

@@ -63,7 +63,7 @@ export default function Settings() {
     <div className="min-h-screen bg-[#FAFAF9] py-10 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6 flex items-center justify-start">
-          <button onClick={() => navigate("/dashboard")} className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#111827]"><ArrowLeft className="w-4 h-4" /> Back to Dashboard</button>
+          <button onClick={() => navigate("/")} className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#111827]"><ArrowLeft className="w-4 h-4" /> Home </button>
         </div>
 
         <div className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden">

@@ -1,5 +1,5 @@
 import { createElement, useState } from 'react';
-import { BarChart3, FileText, LogOut, Menu, Settings, X } from 'lucide-react';
+import { BarChart3, FileText, LogOut, Menu, Settings, ShoppingBag, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { authAPI, clearAuthData } from '../api';
 import breedifyLogo from '../assets/breedify_logo.png';
@@ -8,6 +8,8 @@ const links = [
   { to: '/dashboard', label: 'Image prediction', icon: BarChart3 },
   { to: '/records', label: 'Records', icon: FileText },
   { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/sell', label: 'Sell animal', icon: ShoppingBag },
+  { to: '/my-listings', label: 'My listings', icon: FileText },
 ];
 
 const AppSidebar = ({ children }) => {

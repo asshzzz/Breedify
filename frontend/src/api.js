@@ -73,6 +73,13 @@ export const recordAPI = {
   seedDummyData: () => api.post('/records/seed-data'),
 };
 
+export const listingAPI = {
+  create: (listingData) => api.post('/listings', listingData),
+  getAll: (params = {}) => api.get('/listings', { params }),
+  getMine: () => api.get('/listings/mine'),
+  updateStatus: (id, status) => api.patch(`/listings/${id}/status`, { status }),
+};
+
 // ===================== IMAGE APIs =====================
 export const imageAPI = {
   upload: (formData) =>
