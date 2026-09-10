@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { 
   registerUser, 
-  loginUser, 
+  loginUser,
+  googleLogin,
   logoutUser,
   getUserProfile,
   getAllUsers,
@@ -14,6 +15,9 @@ import { verifyJWT, isAdmin } from "../middlewares/auth.middleware.js";  // ✅ 
 const router = Router();
 
 // ====== Public Routes ======
+
+// ✅ Google Sign-In
+router.post("/google", googleLogin);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 

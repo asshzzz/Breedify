@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
 import { authAPI, setAuthToken, setUserData, isAuthenticated } from '../api';
 import breedifyLogo from '../assets/breedify_logo.png';
@@ -12,6 +13,7 @@ const Login = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   // Redirect if already logged in
   useEffect(() => {
@@ -59,6 +61,24 @@ const Login = () => {
       // Error handling from api.js interceptor
       setError(err || 'Login failed. Please check your credentials.');
       console.error('Login error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async ({ credential }) => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await authAPI.googleLogin(credential);
+      if (!response?.token) {
+        throw new Error('Invalid response from Google sign-in.');
+      }
+      setAuthToken(response.token);
+      setUserData(response.user);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err?.message || err || 'Google sign-in failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -154,6 +174,25 @@ const Login = () => {
               )}
             </button>
           </form>
+
+          <div className="my-6 flex items-center gap-3 text-xs text-[#9CA3AF]">
+            <span className="h-px flex-1 bg-[#E5E7EB]" />
+            <span>OR</span>
+            <span className="h-px flex-1 bg-[#E5E7EB]" />
+          </div>
+
+          {googleClientId ? (
+            <GoogleOAuthProvider clientId={googleClientId}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError('Google sign-in was cancelled or failed.')}
+                useOneTap={false}
+                width="100%"
+              />
+            </GoogleOAuthProvider>
+          ) : (
+            <p className="text-center text-xs text-[#B3261E]">Google sign-in is not configured.</p>
+          )}
 
           <div className="mt-6 text-center">
             <p className="text-[#6B7280] text-sm">

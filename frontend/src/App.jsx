@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import AppSidebar from './components/AppSidebar';
+
 
 // Import all pages
 import Home from './pages/Home';

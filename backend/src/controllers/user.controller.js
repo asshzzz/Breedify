@@ -4,6 +4,12 @@ import bcrypt from "bcryptjs";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import dotenv from "dotenv";
+import { OAuth2Client } from "google-auth-library";
+
+dotenv.config();
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Generate JWT Token
 const generateToken = (user) => {
@@ -257,5 +263,56 @@ export const deleteUser = async (req, res) => {
       success: false,
       message: error.message 
     });
+  }
+};
+
+export const googleLogin = async (req, res) => {
+  try {
+    const { credential } = req.body;
+    if (!credential) {
+      return res.status(400).json({ success: false, message: "Google credential is required" });
+    }
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+
+    if (!payload?.email || !payload.email_verified) {
+      return res.status(401).json({ success: false, message: "Google account email is not verified" });
+    }
+
+    let user = await User.findOne({ email: payload.email });
+    if (!user) {
+      user = await User.create({
+        name: payload.name || payload.email.split('@')[0],
+        email: payload.email,
+        googleId: payload.sub,
+        picture: payload.picture,
+        authProvider: "google",
+      });
+    } else if (!user.googleId) {
+      user.googleId = payload.sub;
+      user.picture = payload.picture;
+      user.authProvider = "google";
+      await user.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Google login successful",
+      token: generateToken(user),
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        picture: user.picture,
+      },
+    });
+  } catch (error) {
+    console.error("Google token verification failed:", error.message);
+    res.status(401).json({ success: false, message: "Invalid Google token" });
   }
 };
