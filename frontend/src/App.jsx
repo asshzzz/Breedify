@@ -15,6 +15,7 @@ import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import SellAnimal from './pages/SellAnimal';
 import MyListings from './pages/MyListings';
+import ListingDetails from './pages/ListingDetails';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/listing/:id" element={<ListingDetails />} />
 
         {/* Protected Routes */}
         <Route 

@@ -180,12 +180,13 @@ export const updateUser = async (req, res) => {
   try {
     const name = req.body.name?.trim();
     const email = req.body.email?.trim();
+    const phone = req.body.phone?.trim();
     const userId = req.user._id;
 
     console.log('📝 Update Request:', { name, email, userId });
     console.log('👤 Current User Email:', req.user.email);
 
-    if (!name && !email) {
+    if (!name && !email && phone === undefined) {
       return res.status(400).json({
         success: false,
         message: 'Please provide name or email to update'
@@ -209,6 +210,16 @@ export const updateUser = async (req, res) => {
       }
       
       updateData.email = email;
+    }
+
+    if (phone !== undefined) {
+      if (phone && !/^[0-9]{10}$/.test(phone)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Phone number must be exactly 10 digits'
+        });
+      }
+      updateData.phone = phone;
     }
 
     console.log('🔄 Update Data:', updateData);

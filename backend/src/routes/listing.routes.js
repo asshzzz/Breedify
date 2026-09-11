@@ -60,6 +60,22 @@ router.get('/mine', verifyJWT, async (req, res) => {
   }
 });
 
+// View one active listing with public seller contact details.
+router.get('/:id', async (req, res) => {
+  try {
+    const listing = await Listing.findOne({ _id: req.params.id, status: 'active' })
+      .populate('seller', 'name email phone');
+
+    if (!listing) {
+      return res.status(404).json({ success: false, message: 'Listing not found' });
+    }
+
+    res.status(200).json({ success: true, data: listing });
+  } catch (error) {
+    res.status(400).json({ success: false, message: 'Could not fetch listing', error: error.message });
+  }
+});
+
 router.patch('/:id/status', verifyJWT, async (req, res) => {
   try {
     if (!['active', 'sold', 'withdrawn'].includes(req.body.status)) {

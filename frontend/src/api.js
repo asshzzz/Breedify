@@ -77,6 +77,7 @@ export const recordAPI = {
 export const listingAPI = {
   create: (listingData) => api.post('/listings', listingData),
   getAll: (params = {}) => api.get('/listings', { params }),
+  getById: (id) => api.get(`/listings/${id}`),
   getMine: () => api.get('/listings/mine'),
   updateStatus: (id, status) => api.patch(`/listings/${id}/status`, { status }),
 };

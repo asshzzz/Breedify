@@ -156,19 +156,6 @@ const Home = () => {
   const FilterPanel = () => (
     <div className="space-y-6">
       <div>
-        <p className="text-xs font-medium text-[#7A8172] mb-2">Search</p>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A9186]" size={16} />
-          <input
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Breed or location"
-            className="w-full border border-[#E4DFD3] bg-white rounded-md py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#1F3A2E] transition-colors"
-          />
-        </div>
-      </div>
-
-      <div>
         <p className="text-xs font-medium text-[#7A8172] mb-2">Animal type</p>
         <div className="space-y-1">
           <button
@@ -235,13 +222,24 @@ const Home = () => {
 
       {/* Top bar */}
       <header className="sticky top-0 z-40 bg-[#EAF4E7]/95 backdrop-blur border-b border-[#C9DEC5]">
-        <div className="flex items-center justify-between px-4 lg:px-6 py-3">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 lg:px-6 py-3">
           <Link to="/" className="flex items-center gap-2.5">
             <img src={breedifyLogo} alt="Breedify" className="h-9 w-9 object-contain" />
             <span className="font-display text-lg font-semibold text-[#1F3A2E]">Breedify</span>
           </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="relative w-[min(50vw,36rem)]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A9186]" size={16} />
+            <input
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Breed or location"
+              aria-label="Search listings by breed or location"
+              className="w-full rounded-md border border-[#C9DEC5] bg-white py-2.5 pl-9 pr-3 text-sm outline-none transition-colors focus:border-[#1F3A2E]"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={handleSell}
@@ -381,14 +379,15 @@ const Home = () => {
             </button>
           </div>
 
-          {/* Listing rows */}
-          <div className="space-y-3">
+          {/* Listing grid */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredListings.slice(0, 8).map((listing) => (
-              <article
+              <Link
                 key={listing._id}
-                className="group flex gap-4 rounded-lg border border-[#E4DFD3] bg-white p-3 hover:border-[#C9BFA8] transition-colors"
+                to={`/listing/${listing._id}`}
+                className="group flex aspect-square min-w-0 flex-col rounded-lg border border-[#E4DFD3] bg-white p-3 transition-colors hover:border-[#C9BFA8]"
               >
-                <div className="relative h-28 w-36 shrink-0 overflow-hidden rounded-md bg-[#F0ECE1]">
+                <div className="relative h-1/2 shrink-0 overflow-hidden rounded-md bg-[#F0ECE1]">
                   {listing.images?.[0]?.imageUrl ? (
                     <img
                       src={`${listing.images[0].imageUrl.startsWith('http') ? '' : 'http://localhost:8000'}${listing.images[0].imageUrl}`}
@@ -402,7 +401,7 @@ const Home = () => {
                   )}
                 </div>
 
-                <div className="flex flex-1 flex-col justify-between min-w-0 py-0.5">
+                <div className="flex min-h-0 flex-1 flex-col justify-between pt-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
@@ -425,7 +424,7 @@ const Home = () => {
                     <span className="text-[#3F7A4F] font-medium">Available</span>
                   </div>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
 

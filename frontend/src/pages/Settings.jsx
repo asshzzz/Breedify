@@ -9,8 +9,8 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editingProfile, setEditingProfile] = useState(false);
-  const [profileForm, setProfileForm] = useState({ name: "", email: "" });
-  const [savedName, setSavedName] = useState("");
+  const [profileForm, setProfileForm] = useState({ name: "", email: "", phone: "" });
+  const [savedProfile, setSavedProfile] = useState({ name: "", phone: "" });
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -18,8 +18,9 @@ export default function Settings() {
         const userResponse = await authAPI.getCurrentUser();
         const user = userResponse.data?.user || userResponse.data || userResponse.user || userResponse;
         const name = user?.name || "";
-        setProfileForm({ name, email: user?.email || "" });
-        setSavedName(name);
+        const phone = user?.phone || "";
+        setProfileForm({ name, email: user?.email || "", phone });
+        setSavedProfile({ name, phone });
 
       } catch (error) {
         toast.error(error || "Failed to load settings");
@@ -37,13 +38,20 @@ export default function Settings() {
       toast.error("Name cannot be empty");
       return;
     }
+    const phone = profileForm.phone.trim();
+    if (phone && !/^[0-9]{10}$/.test(phone)) {
+      toast.error("Please enter a valid 10-digit phone number");
+      return;
+    }
     setSaving(true);
     try {
-      const profileData = { name };
+      const profileData = { name, phone };
       const response = await authAPI.updateProfile(profileData);
-      const updatedUser = response.user || response.data?.user || { ...profileForm, name };
-      setProfileForm((current) => ({ ...current, name: updatedUser.name || name }));
-      setSavedName(updatedUser.name || name);
+      const updatedUser = response.user || response.data?.user || { ...profileForm, name, phone };
+      const updatedName = updatedUser.name || name;
+      const updatedPhone = updatedUser.phone || "";
+      setProfileForm((current) => ({ ...current, name: updatedName, phone: updatedPhone }));
+      setSavedProfile({ name: updatedName, phone: updatedPhone });
       setUserData(updatedUser);
       setEditingProfile(false);
       toast.success("Profile updated successfully");
@@ -72,6 +80,7 @@ export default function Settings() {
                 <h2 className="text-base font-semibold text-[#111827]">Account Information</h2>
                 <label className="block text-sm font-medium text-[#374151]">Name<input name="name" value={profileForm.name} disabled={!editingProfile} onChange={(event) => setProfileForm({ ...profileForm, name: event.target.value })} className={`${inputClass} mt-2 disabled:bg-[#F9FAFB] disabled:text-[#6B7280]`} placeholder="Enter your name" /></label>
                 <label className="block text-sm font-medium text-[#374151]">Email<input name="email" type="email" value={profileForm.email} disabled className={`${inputClass} mt-2 bg-[#F9FAFB] text-[#6B7280]`} /></label>
+                <label className="block text-sm font-medium text-[#374151]">Phone number<input name="phone" type="tel" inputMode="numeric" pattern="[0-9]{10}" maxLength={10} value={profileForm.phone} disabled={!editingProfile} onChange={(event) => setProfileForm({ ...profileForm, phone: event.target.value.replace(/\D/g, "").slice(0, 10) })} className={`${inputClass} mt-2 disabled:bg-[#F9FAFB] disabled:text-[#6B7280]`} placeholder="10-digit phone number" /></label>
             </div>
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
@@ -84,7 +93,7 @@ export default function Settings() {
               </button>
               <button
                 type="submit"
-                disabled={!editingProfile || saving || profileForm.name.trim() === savedName.trim()}
+                disabled={!editingProfile || saving || (profileForm.name.trim() === savedProfile.name.trim() && profileForm.phone.trim() === savedProfile.phone.trim())}
                 className="w-full bg-[#166534] hover:bg-[#14532D] text-white text-sm font-medium py-3 rounded-full flex justify-center items-center disabled:bg-[#D1D5DB] disabled:text-[#6B7280] disabled:cursor-not-allowed"
               >
                 <Save className="w-4 h-4 mr-2" /> {saving ? "Saving..." : "Save Changes"}
