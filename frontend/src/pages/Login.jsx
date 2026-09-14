@@ -52,8 +52,7 @@ const Login = () => {
         setAuthToken(response.token);
         setUserData(response.user);
 
-        // Navigate to dashboard
-        navigate('/dashboard');
+        navigate('/');
       } else {
         setError('Invalid response from server');
       }
@@ -76,7 +75,7 @@ const Login = () => {
       }
       setAuthToken(response.token);
       setUserData(response.user);
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       setError(err?.message || err || 'Google sign-in failed. Please try again.');
     } finally {

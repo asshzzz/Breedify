@@ -6,7 +6,7 @@ import connectDB from './db/index.js'
 import app from './app.js'
 import { registerSocketHandlers } from './socket.js'
 
-dotenv.config({ //ye isiliye kaafi taaki dotenv ko import se laa ske require se nhi
+dotenv.config({ //ye isiliye kaafi taaki dotenv ko load kar sake aur env variables ko access kar sake
     path: './.env'
 })
 connectDB()

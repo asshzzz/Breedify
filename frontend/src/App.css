@@ -1,7 +1,48 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-    width: 100%;
-    min-height: 100vh;
-  color: #888;
+  width: 100%;
+  min-height: 100vh;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 16px;
+  }
+
+  .mobile-safe-area {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tablet-content {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 }

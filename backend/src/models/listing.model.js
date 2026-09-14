@@ -9,7 +9,7 @@ const listingSchema = new mongoose.Schema({
   },
   animalType: {
     type: String,
-    enum: ['cattle', 'buffalo'],
+    enum: ['cattle', 'buffalo', 'goats'],
     required: true
   },
   breed: {

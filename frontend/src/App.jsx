@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 
 // Import all pages
@@ -16,11 +16,12 @@ import Settings from './pages/Settings';
 import SellAnimal from './pages/SellAnimal';
 import MyListings from './pages/MyListings';
 import ListingDetails from './pages/ListingDetails';
+import Chats from './pages/Chats';
+import ChatConversation from './pages/ChatConversation';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
-  const location = useLocation();
   if (!token) return <Navigate to="/login" />;
   return children ;
 };
@@ -34,6 +35,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/listing/:id" element={<ListingDetails />} />
+        <Route path="/chats" element={<ProtectedRoute><Chats /></ProtectedRoute>} />
+        <Route path="/chats/:listingId" element={<ProtectedRoute><ChatConversation /></ProtectedRoute>} />
 
         {/* Protected Routes */}
         <Route 

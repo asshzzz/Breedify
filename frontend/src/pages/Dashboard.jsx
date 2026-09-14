@@ -13,6 +13,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Check authentication
@@ -36,7 +37,7 @@ const Dashboard = () => {
     try {
       // Fetch user profile (to ensure fresh data)
       const userProfile = await authAPI.getCurrentUser();
-      setUser(userProfile.data || userProfile);
+      setUser(userProfile.user || userProfile.data || userProfile);
 
       // Fetch all records to calculate stats
       const allRecords = await recordAPI.getAll();
@@ -97,7 +98,7 @@ const Dashboard = () => {
       <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-[#166534] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-sm font-medium text-[#6B7280]">Loading dashboard…</p>
+          <p className="text-sm font-medium text-[#6B7280]">Loading…</p>
         </div>
       </div>
     );
@@ -112,7 +113,7 @@ const Dashboard = () => {
       <div className="flex-1 min-w-0">
         {/* Top Bar */}
         <header className="bg-white border-b border-[#E5E7EB]">
-          <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
             <div className="flex items-center gap-4">
               <button onClick={() => setSidebarOpen(true)} className="md:hidden text-[#374151]">
                 <Menu size={22} />
@@ -126,31 +127,36 @@ const Dashboard = () => {
                 Home
               </button>
 
-              <h2 className="text-lg font-semibold text-[#111827]">Breed prediction</h2>
+              <h2 className="text-base font-semibold text-[#111827] sm:text-lg">Breed prediction</h2>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-medium text-[#111827]">{user?.name || user?.fullName || 'User'}</p>
-                <p className="text-xs text-[#9CA3AF]">{user?.role || 'Field Worker'}</p>
-              </div>
-              <div className="w-9 h-9 bg-[#166534] rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-semibold">
-                  {(user?.name || user?.fullName || 'U').charAt(0).toUpperCase()}
-                </span>
-              </div>
+            <div className="relative flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setProfileMenuOpen((isOpen) => !isOpen)}
+                aria-label="Open account menu"
+                aria-expanded={profileMenuOpen}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[#1F3A2E] bg-white text-[#1F3A2E] transition-colors hover:bg-[#F3F4F2]"
+              >
+                {(user?.name || user?.fullName) && <span className="text-sm font-semibold">{(user.name || user.fullName).trim().charAt(0).toUpperCase()}</span>}
+              </button>
+              {profileMenuOpen && <div className="absolute right-0 top-11 z-50 w-44 rounded-lg border border-[#E4DFD3] bg-white p-1.5 shadow-lg">
+                <Link to="/my-listings" onClick={() => setProfileMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-medium text-[#374151] hover:bg-[#F5F2EA]">My listings</Link>
+                <Link to="/settings" onClick={() => setProfileMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-medium text-[#374151] hover:bg-[#F5F2EA]">Account settings</Link>
+                <button type="button" onClick={handleLogout} className="w-full rounded-md px-3 py-2 text-left text-sm font-medium text-[#B3261E] hover:bg-[#FBEAE9]">Log out</button>
+              </div>}
             </div>
           </div>
         </header>
 
         {/* Dashboard Content */}
-        <main className="p-6">
+        <main className="p-4 sm:p-6">
           {/* Error Alert */}
           {error && (
             <div className="mb-6 bg-[#FEF2F2] border border-[#FCA5A5]/60 rounded-xl p-4 flex items-start gap-3">
               <AlertCircle className="text-[#DC2626] mt-0.5 shrink-0" size={18} />
               <div className="flex-1">
-                <p className="text-sm font-medium text-[#DC2626]">Error loading dashboard</p>
+                <p className="text-sm font-medium text-[#DC2626]">Error loading</p>
                 <p className="text-sm text-[#DC2626]/80 mt-1">{error}</p>
                 <button
                   onClick={fetchDashboardData}

@@ -7,6 +7,11 @@ const messageSchema = new mongoose.Schema({
     required: true,
     index: true
   },
+  conversation: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Conversation',
+    index: true
+  },
   sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -17,7 +22,11 @@ const messageSchema = new mongoose.Schema({
     required: true,
     trim: true,
     maxlength: 1000
-  }
+  },
+  deletedFor: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }]
 }, { timestamps: true });
 
 messageSchema.index({ listing: 1, createdAt: 1 });

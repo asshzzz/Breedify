@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, Mail, MapPin, MessageCircle, Phone, Send } from 'lucide-react';
-import { io } from 'socket.io-client';
+import React, { useEffect, useState } from 'react';
+import { ArrowLeft, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { getUserData, isAuthenticated, listingAPI } from '../api';
 
@@ -15,13 +14,6 @@ const ListingDetails = () => {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [messageDraft, setMessageDraft] = useState('');
-  const [chatConnected, setChatConnected] = useState(false);
-  const [chatError, setChatError] = useState('');
-  const [sending, setSending] = useState(false);
-  const socketRef = useRef(null);
-  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const loadListing = async () => {
@@ -37,49 +29,6 @@ const ListingDetails = () => {
 
     loadListing();
   }, [id]);
-
-  useEffect(() => {
-    if (!listing || !isAuthenticated()) return undefined;
-
-    const socket = io(API_ORIGIN, { auth: { token: localStorage.getItem('token') } });
-    socketRef.current = socket;
-    socket.on('connect', () => {
-      setChatConnected(true);
-      setChatError('');
-      socket.emit('join_listing_chat', { listingId: listing._id }, (response) => {
-        if (!response?.ok) setChatError(response?.message || 'Could not load chat.');
-        else setMessages(response.messages || []);
-      });
-    });
-    socket.on('connect_error', () => {
-      setChatConnected(false);
-      setChatError('Chat connection failed. Please try again.');
-    });
-    socket.on('disconnect', () => setChatConnected(false));
-    socket.on('listing_message', (message) => setMessages((current) => [...current, message]));
-
-    return () => {
-      socket.disconnect();
-      socketRef.current = null;
-    };
-  }, [listing]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  const sendMessage = (event) => {
-    event.preventDefault();
-    const body = messageDraft.trim();
-    if (!body || !chatConnected || sending) return;
-
-    setSending(true);
-    socketRef.current.emit('send_listing_message', { listingId: listing._id, body }, (response) => {
-      if (!response?.ok) setChatError(response?.message || 'Could not send message.');
-      else setMessageDraft('');
-      setSending(false);
-    });
-  };
 
   if (loading) {
     return <div className="flex min-h-screen items-center justify-center text-sm text-[#66756D]">Loading listing...</div>;
@@ -100,9 +49,11 @@ const ListingDetails = () => {
   const seller = listing.seller || {};
   const currentUser = getUserData();
   const currentUserId = currentUser?._id || currentUser?.id;
+  const sellerId = seller._id || seller;
+  const isOwner = currentUserId?.toString() === sellerId?.toString();
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] px-6 py-8 md:px-10">
+    <div className="min-h-screen bg-[#FAFAF9] px-4 py-6 sm:px-6 sm:py-8 md:px-10">
       <div className="mx-auto max-w-6xl">
         <Link to="/" className="inline-flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-[#173B2D]"><ArrowLeft size={16} /> Back to listings</Link>
 
@@ -115,7 +66,7 @@ const ListingDetails = () => {
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6B8E23]">{listing.animalType}</p>
-                  <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#173B2D]">{listing.title}</h1>
+                  <h1 className="mt-2 text-2xl font-semibold tracking-tight text-[#173B2D] sm:text-3xl">{listing.title}</h1>
                 </div>
                 <p className="text-2xl font-semibold text-[#173B2D]">₹{Number(listing.price || 0).toLocaleString('en-IN')}</p>
               </div>
@@ -138,39 +89,13 @@ const ListingDetails = () => {
               {!seller.phone && !seller.email && <p className="text-[#66756D]">Contact details are not available.</p>}
             </div>
 
-            <div className="mt-8 border-t border-[#EEF1ED] pt-6">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="flex items-center gap-2 text-lg font-semibold text-[#173B2D]"><MessageCircle size={19} /> Chat</h2>
-                {isAuthenticated() && <span className={`text-xs font-medium ${chatConnected ? 'text-[#3F7A4F]' : 'text-[#9CA3AF]'}`}>{chatConnected ? 'Online' : 'Connecting...'}</span>}
-              </div>
-
+            {!isOwner && <div className="mt-8 border-t border-[#EEF1ED] pt-6">
               {!isAuthenticated() ? (
                 <p className="mt-4 text-sm leading-relaxed text-[#66756D]">Log in to message the seller about this animal. <Link to="/login" className="font-semibold text-[#173B2D] hover:underline">Log in</Link></p>
               ) : (
-                <>
-                  <div className="mt-4 max-h-64 space-y-3 overflow-y-auto bg-[#F7FAF4] p-3">
-                    {messages.length === 0 ? <p className="text-sm text-[#66756D]">Start the conversation about this listing.</p> : messages.map((message) => {
-                      const senderId = message.sender?._id || message.sender;
-                      const isMine = senderId?.toString() === currentUserId?.toString();
-                      return (
-                        <div key={message._id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-                          <div className={`max-w-[85%] px-3 py-2 text-sm ${isMine ? 'bg-[#173B2D] text-white' : 'bg-white text-[#374151] ring-1 ring-[#E5E7EB]'}`}>
-                            {!isMine && <p className="mb-1 text-xs font-semibold text-[#6B8E23]">{message.sender?.name || 'Seller'}</p>}
-                            <p className="break-words">{message.body}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                    <div ref={messagesEndRef} aria-hidden="true" />
-                  </div>
-                  {chatError && <p className="mt-3 text-xs text-[#B91C1C]">{chatError}</p>}
-                  <form onSubmit={sendMessage} className="mt-3 flex gap-2">
-                    <input value={messageDraft} onChange={(event) => setMessageDraft(event.target.value)} maxLength={1000} placeholder="Write a message..." disabled={!chatConnected || sending} className="min-w-0 flex-1 border border-[#D7DFD6] px-3 py-2.5 text-sm outline-none focus:border-[#6B8E23] disabled:bg-[#F9FAFB]" />
-                    <button type="submit" disabled={!chatConnected || sending || !messageDraft.trim()} aria-label="Send message" className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#173B2D] text-white hover:bg-[#245642] disabled:cursor-not-allowed disabled:bg-[#D1D5DB]"><Send size={16} /></button>
-                  </form>
-                </>
+                <Link to={`/chats/${listing._id}`} className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[#1F3A2E] px-4 py-3 text-sm font-semibold text-white hover:bg-[#173025]"><MessageCircle size={17} /> Chat with seller</Link>
               )}
-            </div>
+            </div>}
           </aside>
         </div>
       </div>

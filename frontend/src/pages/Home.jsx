@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-import { ArrowRight, Camera, Lock, Mail, Phone, Search, User, UserCircle, SlidersHorizontal, X, AlertCircle, CheckCircle } from 'lucide-react';
-import { authAPI, isAuthenticated, listingAPI, setAuthToken, setUserData } from '../api';
+import { ArrowRight, Camera, Lock, Mail, MessageCircle, Phone, Search, User, UserCircle, SlidersHorizontal, X, AlertCircle, CheckCircle } from 'lucide-react';
+import { authAPI, getUserData, isAuthenticated, listingAPI, setAuthToken, setUserData } from '../api';
 import breedifyLogo from '../assets/breedify_logo.png';
 
 // Add once to index.html <head>, if not already present:
@@ -26,8 +26,10 @@ const Home = () => {
   const navigate = useNavigate();
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [listings, setListings] = useState([]);
   const [animalType, setAnimalType] = useState('all');
+  const [breed, setBreed] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [sort, setSort] = useState('recent');
   const [loginOpen, setLoginOpen] = useState(false);
@@ -40,6 +42,8 @@ const Home = () => {
   const [registerError, setRegisterError] = useState('');
   const [registerSuccess, setRegisterSuccess] = useState('');
   const [registerLoading, setRegisterLoading] = useState(false);
+  const userName = getUserData()?.name?.trim();
+  const userInitial = userName ? userName.charAt(0).toUpperCase() : null;
 
   useEffect(() => {
     const loadListings = async () => {
@@ -64,6 +68,15 @@ const Home = () => {
   const handleSell = () => {
     if (isAuthenticated()) {
       navigate('/sell');
+    } else {
+      setLoginOpen(true);
+      setLoginError('');
+    }
+  };
+
+  const handleChats = () => {
+    if (isAuthenticated()) {
+      navigate('/chats');
     } else {
       setLoginOpen(true);
       setLoginError('');
@@ -102,7 +115,7 @@ const Home = () => {
       setAuthToken(response.token);
       setUserData(response.user);
       setLoginOpen(false);
-      navigate('/dashboard');
+      navigate('/');
     } catch (error) {
       setLoginError(error?.message || error || 'Google sign-in failed. Please try again.');
     } finally {
@@ -140,10 +153,16 @@ const Home = () => {
     return base;
   }, [listings]);
 
+  const breeds = useMemo(
+    () => [...new Set(listings.map((listing) => listing.breed).filter(Boolean))].sort(),
+    [listings]
+  );
+
   const filteredListings = useMemo(() => {
     let result = listings.filter(
       (listing) =>
         (animalType === 'all' || listing.animalType === animalType) &&
+        (breed === 'all' || listing.breed === breed) &&
         `${listing.breed} ${listing.location} ${listing.title}`
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
@@ -151,20 +170,28 @@ const Home = () => {
     if (sort === 'price_low') result = [...result].sort((a, b) => (a.price || 0) - (b.price || 0));
     if (sort === 'price_high') result = [...result].sort((a, b) => (b.price || 0) - (a.price || 0));
     return result;
-  }, [listings, animalType, searchTerm, sort]);
+  }, [listings, animalType, breed, searchTerm, sort]);
 
   const FilterPanel = () => (
-    <div className="space-y-6">
+    <div className="space-y-7">
+      <div className="flex items-center justify-between border-b border-[#DDE8D9] pb-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7A8172]">Filters</p>
+        <button type="button" onClick={() => { setFiltersOpen(false); setMobileFiltersOpen(false); }} aria-label="Close filters" className="rounded-full p-1 text-[#66756D] hover:bg-white hover:text-[#1F3A2E]"><X size={17} /></button>
+      </div>
+
       <div>
-        <p className="text-xs font-medium text-[#7A8172] mb-2">Animal type</p>
-        <div className="space-y-1">
+        <div className="mb-3 flex items-center justify-between">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7A8172]">Animal type</p>
+          <span className="text-xs text-[#A9B09E]">{listings.length} total</span>
+        </div>
+        <div className="space-y-1.5">
           <button
             onClick={() => setAnimalType('all')}
-            className={`w-full flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors ${
-              animalType === 'all' ? 'bg-[#1F3A2E] text-white' : 'text-[#22291F] hover:bg-[#F0ECE1]'
+            className={`w-full flex items-center justify-between rounded-lg border px-3.5 py-2.5 text-sm transition-colors ${
+              animalType === 'all' ? 'border-[#1F3A2E] bg-[#1F3A2E] text-white shadow-sm' : 'border-transparent text-[#374151] hover:border-[#DDE8D9] hover:bg-white'
             }`}
           >
-            <span>All animals</span>
+            <span className="font-medium">All animals</span>
             <span className={animalType === 'all' ? 'text-white/70' : 'text-[#A9B09E]'}>
               {listings.length}
             </span>
@@ -173,11 +200,11 @@ const Home = () => {
             <button
               key={c.key}
               onClick={() => setAnimalType(c.key)}
-              className={`w-full flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors ${
-                animalType === c.key ? 'bg-[#1F3A2E] text-white' : 'text-[#22291F] hover:bg-[#F0ECE1]'
+              className={`w-full flex items-center justify-between rounded-lg border px-3.5 py-2.5 text-sm transition-colors ${
+                animalType === c.key ? 'border-[#1F3A2E] bg-[#1F3A2E] text-white shadow-sm' : 'border-transparent text-[#374151] hover:border-[#DDE8D9] hover:bg-white'
               }`}
             >
-              <span>{c.label}</span>
+              <span className="font-medium">{c.label}</span>
               <span className={animalType === c.key ? 'text-white/70' : 'text-[#A9B09E]'}>
                 {counts[c.key]}
               </span>
@@ -187,14 +214,26 @@ const Home = () => {
       </div>
 
       <div>
-        <p className="text-xs font-medium text-[#7A8172] mb-2">Sort by</p>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-[#7A8172]">Breed</p>
+        <select
+          value={breed}
+          onChange={(event) => setBreed(event.target.value)}
+          className="w-full rounded-lg border border-[#DDE8D9] bg-white px-3.5 py-2.5 text-sm text-[#374151] outline-none focus:border-[#1F3A2E]"
+        >
+          <option value="all">All breeds</option>
+          {breeds.map((breedName) => <option key={breedName} value={breedName}>{breedName}</option>)}
+        </select>
+      </div>
+
+      <div>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-[#7A8172]">Sort listings</p>
         <div className="space-y-1">
           {SORTS.map((s) => (
             <button
               key={s.key}
               onClick={() => setSort(s.key)}
-              className={`w-full text-left rounded-md px-3 py-2 text-sm transition-colors ${
-                sort === s.key ? 'bg-[#F0ECE1] text-[#1F3A2E] font-medium' : 'text-[#5B6357] hover:bg-[#F5F2EA]'
+              className={`w-full text-left rounded-md px-3.5 py-2 text-sm transition-colors ${
+                sort === s.key ? 'bg-[#EAF4E7] font-medium text-[#1F3A2E]' : 'text-[#66756D] hover:bg-white hover:text-[#1F3A2E]'
               }`}
             >
               {s.label}
@@ -206,9 +245,9 @@ const Home = () => {
       <button
         type="button"
         onClick={handleSell}
-        className="flex items-center justify-center gap-2 bg-[#1F3A2E] text-white rounded-md py-2.5 text-sm font-medium hover:bg-[#173025] transition-colors"
+        className="flex w-full items-center justify-between rounded-lg border border-[#C9DEC5] bg-white px-3.5 py-3 text-left transition-colors hover:border-[#6B8E23] hover:bg-[#F7FBF5]"
       >
-        List your animal <ArrowRight size={15} />
+        <span><span className="block text-xs font-semibold uppercase tracking-[0.1em] text-[#6B8E23]">Selling?</span><span className="mt-0.5 block text-sm font-semibold text-[#1F3A2E]">List your animal</span></span><ArrowRight size={16} className="text-[#3F7A4F]" />
       </button>
     </div>
   );
@@ -222,13 +261,13 @@ const Home = () => {
 
       {/* Top bar */}
       <header className="sticky top-0 z-40 bg-[#EAF4E7]/95 backdrop-blur border-b border-[#C9DEC5]">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 lg:px-6 py-3">
+        <div className="grid grid-cols-2 items-center gap-3 px-4 py-3 lg:grid-cols-[1fr_auto_1fr] lg:px-6">
           <Link to="/" className="flex items-center gap-2.5">
             <img src={breedifyLogo} alt="Breedify" className="h-9 w-9 object-contain" />
             <span className="font-display text-lg font-semibold text-[#1F3A2E]">Breedify</span>
           </Link>
 
-          <div className="relative w-[min(50vw,36rem)]">
+          <div className="relative col-span-2 row-start-2 w-full lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:w-[min(50vw,36rem)]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A9186]" size={16} />
             <input
               value={searchTerm}
@@ -239,11 +278,20 @@ const Home = () => {
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2">
+          <div className="flex min-w-0 items-center justify-end gap-1.5 sm:gap-2">
+            {isAuthenticated() && (
+              <button
+                type="button"
+                onClick={handleChats}
+                className="inline-flex items-center gap-1.5 rounded-md bg-[#1F3A2E] px-2.5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#173025] sm:px-3.5"
+              >
+                <MessageCircle size={16} /> Chats
+              </button>
+            )}
             <button
               type="button"
               onClick={handleSell}
-              className="inline-flex items-center text-sm font-medium text-white bg-[#1F3A2E] px-3.5 py-2 rounded-md hover:bg-[#173025] transition-colors"
+              className="hidden items-center rounded-md bg-[#1F3A2E] px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#173025] sm:inline-flex"
             >
               Sell
             </button>
@@ -262,12 +310,19 @@ const Home = () => {
                   onClick={() => setProfileMenuOpen((isOpen) => !isOpen)}
                   aria-label="Open account menu"
                   aria-expanded={profileMenuOpen}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E4DFD3] text-[#1F3A2E] hover:bg-[#EFEAE0] transition-colors"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#1F3A2E] bg-white text-black hover:bg-[#F3F4F2] transition-colors"
                 >
-                  <UserCircle size={20} />
+                  {userInitial ? <span className="text-sm font-semibold">{userInitial}</span> : <UserCircle size={20} />}
                 </button>
                 {profileMenuOpen && (
                   <div className="absolute right-0 top-11 z-50 w-44 rounded-lg border border-[#E4DFD3] bg-white p-1.5 shadow-lg">
+                    <Link
+                      to="/my-listings"
+                      onClick={() => setProfileMenuOpen(false)}
+                      className="block rounded-md px-3 py-2 text-sm font-medium text-[#374151] hover:bg-[#F5F2EA]"
+                    >
+                      My listings
+                    </Link>
                     <Link
                       to="/settings"
                       onClick={() => setProfileMenuOpen(false)}
@@ -357,9 +412,7 @@ const Home = () => {
       {/* App shell: sidebar + content */}
       <div className="flex">
         {/* Sidebar (desktop) */}
-        <aside className="hidden md:block w-64 shrink-0 border-r border-[#E4DFD3] px-5 py-6 sticky top-[57px] h-[calc(100vh-57px)] overflow-y-auto">
-          <FilterPanel />
-        </aside>
+        {filtersOpen && <aside className="hidden w-72 shrink-0 border-r border-[#DDE8D9] bg-[#F7FBF5] px-6 py-7 md:sticky md:top-[57px] md:block md:h-[calc(100vh-57px)] md:overflow-y-auto"><FilterPanel /></aside>}
 
         {/* Main */}
         <main className="flex-1 px-5 lg:px-8 py-6 min-w-0">
@@ -370,11 +423,7 @@ const Home = () => {
               </h1>
               <p className="text-sm text-[#7A8172] mt-0.5">{filteredListings.length} animals available</p>
             </div>
-            <button
-              type="button"
-              onClick={() => setMobileFiltersOpen(true)}
-              className="md:hidden flex items-center gap-2 border border-[#E4DFD3] rounded-md px-3 py-2 text-sm font-medium text-[#1F3A2E]"
-            >
+            <button type="button" onClick={() => { setFiltersOpen((isOpen) => !isOpen); setMobileFiltersOpen(true); }} className="flex items-center gap-2 rounded-md border border-[#DDE8D9] bg-white px-3 py-2 text-sm font-medium text-[#1F3A2E] hover:bg-[#F7FBF5]">
               <SlidersHorizontal size={15} /> Filters
             </button>
           </div>

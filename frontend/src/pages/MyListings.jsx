@@ -11,7 +11,8 @@ const MyListings = () => {
   const loadListings = async () => {
     try {
       const response = await listingAPI.getMine();
-      setListings(response.data || response || []);
+      const loadedListings = response.data || response || [];
+      setListings(loadedListings.filter((listing) => listing.status !== 'sold'));
     } catch (requestError) {
       setError(requestError?.message || 'Could not load your listings.');
     } finally {
@@ -24,9 +25,24 @@ const MyListings = () => {
   const changeStatus = async (id, status) => {
     try {
       await listingAPI.updateStatus(id, status);
-      await loadListings();
+      if (status === 'sold') {
+        setListings((currentListings) => currentListings.filter((listing) => listing._id !== id));
+      } else {
+        await loadListings();
+      }
     } catch (requestError) {
       setError(requestError?.message || 'Could not update listing.');
+    }
+  };
+
+  const deleteListing = async (id) => {
+    if (!window.confirm('Delete this withdrawn listing permanently?')) return;
+
+    try {
+      await listingAPI.delete(id);
+      await loadListings();
+    } catch (requestError) {
+      setError(requestError?.message || 'Could not delete listing.');
     }
   };
 
@@ -43,7 +59,7 @@ const MyListings = () => {
           <div className="mt-8 border border-dashed border-[#B8C8B5] bg-white p-12 text-center"><ShoppingBag className="mx-auto text-[#6B8E23]" size={32} /><p className="mt-3 text-sm text-[#66756D]">You have not published an animal yet.</p></div>
         ) : (
           <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {listings.map((listing) => <article key={listing._id} className="bg-white p-5 ring-1 ring-[#E5E7EB]"><div className="flex items-start justify-between gap-4"><div><h2 className="font-semibold text-[#173B2D]">{listing.title}</h2><p className="mt-1 text-sm text-[#66756D]">{listing.animalType} · {listing.breed} · {listing.sex}</p></div><span className="text-xs font-semibold uppercase tracking-wide text-[#6B8E23]">{listing.status}</span></div><div className="mt-5 flex items-center justify-between border-t border-[#EEF1ED] pt-4"><p className="text-lg font-semibold text-[#173B2D]">{listing.price.toLocaleString()}</p><p className="text-sm text-[#66756D]">{listing.location}</p></div>{listing.status === 'active' && <div className="mt-4 flex gap-3"><button onClick={() => changeStatus(listing._id, 'sold')} className="inline-flex items-center gap-2 bg-[#D5F36B] px-3 py-2 text-sm font-semibold text-[#173B2D]"><CheckCircle size={16} /> Mark sold</button><button onClick={() => changeStatus(listing._id, 'withdrawn')} className="border border-[#D7DFD6] px-3 py-2 text-sm font-semibold text-[#66756D]">Withdraw</button></div>}</article>)}
+            {listings.map((listing) => <article key={listing._id} className="bg-white p-5 ring-1 ring-[#E5E7EB]"><div className="flex items-start justify-between gap-4"><div><h2 className="font-semibold text-[#173B2D]">{listing.title}</h2><p className="mt-1 text-sm text-[#66756D]">{listing.animalType} · {listing.breed} · {listing.sex}</p></div><span className="text-xs font-semibold uppercase tracking-wide text-[#6B8E23]">{listing.status}</span></div><div className="mt-5 flex items-center justify-between border-t border-[#EEF1ED] pt-4"><p className="text-lg font-semibold text-[#173B2D]">{listing.price.toLocaleString()}</p><p className="text-sm text-[#66756D]">{listing.location}</p></div>{listing.status === 'active' && <div className="mt-4 flex gap-3"><button onClick={() => changeStatus(listing._id, 'sold')} className="inline-flex items-center gap-2 bg-[#D5F36B] px-3 py-2 text-sm font-semibold text-[#173B2D]"><CheckCircle size={16} /> Mark sold</button><button onClick={() => changeStatus(listing._id, 'withdrawn')} className="border border-[#D7DFD6] px-3 py-2 text-sm font-semibold text-[#66756D]">Withdraw</button></div>}{listing.status === 'withdrawn' && <div className="mt-4 flex gap-3"><button onClick={() => changeStatus(listing._id, 'active')} className="bg-[#D5F36B] px-3 py-2 text-sm font-semibold text-[#173B2D]">Reactivate</button><button onClick={() => deleteListing(listing._id)} className="border border-[#FCA5A5] px-3 py-2 text-sm font-semibold text-[#991B1B]">Delete</button></div>}</article>)}
           </div>
         )}
       </div>

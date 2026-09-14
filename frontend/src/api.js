@@ -79,7 +79,11 @@ export const listingAPI = {
   getAll: (params = {}) => api.get('/listings', { params }),
   getById: (id) => api.get(`/listings/${id}`),
   getMine: () => api.get('/listings/mine'),
+  getChats: () => api.get('/listings/chats'),
+  deleteChat: (id, conversationId) => api.delete(`/listings/${id}/chat`, { data: { conversationId } }),
+  restoreChat: (id, conversationId) => api.post(`/listings/${id}/chat/restore`, { conversationId }),
   updateStatus: (id, status) => api.patch(`/listings/${id}/status`, { status }),
+  delete: (id) => api.delete(`/listings/${id}`),
 };
 
 // ===================== IMAGE APIs =====================
