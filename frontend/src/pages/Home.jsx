@@ -22,6 +22,16 @@ const SORTS = [
   { key: 'price_high', label: 'Price: high to low' },
 ];
 
+const API_ORIGIN = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1')
+  .replace(/\/api\/v1\/?$/, '')
+  .replace(/\/$/, '');
+
+const getImageUrl = (imageUrl) => {
+  if (!imageUrl) return '';
+  if (/^https?:\/\//i.test(imageUrl)) return imageUrl;
+  return new URL(imageUrl, `${API_ORIGIN}/`).toString();
+};
+
 const Home = () => {
   const navigate = useNavigate();
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -449,7 +459,7 @@ const Home = () => {
                 <div className="relative h-1/2 shrink-0 overflow-hidden rounded-md bg-[#F0ECE1]">
                   {listing.images?.[0]?.imageUrl ? (
                     <img
-                      src={`${listing.images[0].imageUrl.startsWith('http') ? '' : 'http://localhost:8000'}${listing.images[0].imageUrl}`}
+                      src={getImageUrl(listing.images[0].imageUrl)}
                       alt={listing.title}
                       className="h-full w-full object-cover"
                     />
