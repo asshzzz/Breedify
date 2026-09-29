@@ -5,31 +5,20 @@ import {
   googleLogin,
   logoutUser,
   getUserProfile,
-  getAllUsers,
-  getUserById,
-  updateUser,
-  deleteUser
+  updateUser
 } from "../controllers/user.controller.js";
-import { verifyJWT, isAdmin } from "../middlewares/auth.middleware.js";  // ✅ verifyToken → verifyJWT
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
 // ====== Public Routes ======
-
-// ✅ Google Sign-In
 router.post("/google", googleLogin);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 // ====== Protected Routes (Login Required) ======
-router.post("/logout", verifyJWT, logoutUser);              // ✅ Changed
-router.get("/profile", verifyJWT, getUserProfile);          // ✅ Changed
-router.put("/profile", verifyJWT, updateUser);              // Update own profile
-
-// ====== Admin Only Routes ======
-router.get("/all", verifyJWT, isAdmin, getAllUsers);        // ✅ Changed
-router.get("/:id", verifyJWT, isAdmin, getUserById);        // ✅ Changed
-router.put("/:id", verifyJWT, isAdmin, updateUser);         // ✅ Changed
-router.delete("/:id", verifyJWT, isAdmin, deleteUser);      // ✅ Changed
+router.post("/logout", verifyJWT, logoutUser);
+router.get("/profile", verifyJWT, getUserProfile);
+router.put("/profile", verifyJWT, updateUser);
 
 export default router;

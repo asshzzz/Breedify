@@ -27,7 +27,7 @@ export const predictBreed = async (req, res) => {
 
     const imageBase64 = req.file.buffer.toString("base64");
 
-    console.log("📤 Calling Roboflow API...");
+
 
     const response = await fetch(
       "https://serverless.roboflow.com/asheer/workflows/detect-and-classify",
@@ -57,7 +57,7 @@ export const predictBreed = async (req, res) => {
 
     const result = await response.json();
     
-    console.log("📥 Full Response:", JSON.stringify(result, null, 2));
+    
 
     // ✅ EXTRACT BREED FROM CLASSIFICATION_PREDICTIONS
     let breed = null;
@@ -65,8 +65,7 @@ export const predictBreed = async (req, res) => {
 
     // Method 1: Check classification_predictions array
     if (result.classification_predictions && Array.isArray(result.classification_predictions)) {
-      console.log("🔍 Found classification_predictions array");
-      
+    
       const classificationOutput = result.classification_predictions[0];
       if (classificationOutput && classificationOutput.predictions) {
         
@@ -74,21 +73,21 @@ export const predictBreed = async (req, res) => {
         if (classificationOutput.predictions.top) {
           breed = classificationOutput.predictions.top;
           confidence = classificationOutput.predictions.confidence;
-          console.log("✅ Breed from 'top' field:", breed, confidence);
+          
         }
         // Check if predictions is an array
         else if (Array.isArray(classificationOutput.predictions.predictions)) {
           const prediction = classificationOutput.predictions.predictions[0];
           breed = prediction.class;
           confidence = prediction.confidence;
-          console.log("✅ Breed from predictions array:", breed, confidence);
+         
         }
       }
     }
 
     // Method 2: Check outputs array (fallback)
     if (!breed && result.outputs && Array.isArray(result.outputs)) {
-      console.log("🔍 Searching in outputs array...");
+      
       
       for (const output of result.outputs) {
         // Check for classification_predictions
@@ -98,8 +97,7 @@ export const predictBreed = async (req, res) => {
             breed = classOutput.predictions.top || classOutput.predictions.predictions?.[0]?.class;
             confidence = classOutput.predictions.confidence || classOutput.predictions.predictions?.[0]?.confidence;
             if (breed) {
-              console.log("✅ Breed found in outputs:", breed, confidence);
-              break;
+             
             }
           }
         }
@@ -110,7 +108,7 @@ export const predictBreed = async (req, res) => {
           if (prediction.class && prediction.class !== "cow") {
             breed = prediction.class;
             confidence = prediction.confidence;
-            console.log("✅ Breed from predictions:", breed, confidence);
+           
             break;
           }
         }

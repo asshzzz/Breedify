@@ -28,6 +28,9 @@ const Home = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [listings, setListings] = useState([]);
+  const [listingsLoading, setListingsLoading] = useState(true);
+  const [listingsError, setListingsError] = useState('');
+  const [listingRetry, setListingRetry] = useState(0);
   const [animalType, setAnimalType] = useState('all');
   const [breed, setBreed] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,16 +49,23 @@ const Home = () => {
   const userInitial = userName ? userName.charAt(0).toUpperCase() : null;
 
   useEffect(() => {
+    let active = true;
     const loadListings = async () => {
+      setListingsLoading(true);
+      setListingsError('');
       try {
         const response = await listingAPI.getAll();
-        setListings(response.data || response || []);
-      } catch {
-        setListings([]);
+        if (active) setListings(response.data || response || []);
+      } catch (requestError) {
+        if (active) setListingsError(requestError?.message || requestError || 'Could not load listings.');
+      } finally {
+        if (active) setListingsLoading(false);
       }
     };
     loadListings();
-  }, []);
+
+    return () => { active = false; };
+  }, [listingRetry]);
 
   const handleGetStarted = () => {
     if (isAuthenticated()) {
@@ -421,7 +431,7 @@ const Home = () => {
               <h1 className="font-display text-xl font-semibold text-[#1F3A2E]">
                 {animalType === 'all' ? 'All listings' : CATEGORIES.find((c) => c.key === animalType)?.label}
               </h1>
-              <p className="text-sm text-[#7A8172] mt-0.5">{filteredListings.length} animals available</p>
+              <p className="text-sm text-[#7A8172] mt-0.5">{listingsError ? 'Listings unavailable' : listingsLoading ? 'Loading listings...' : `${filteredListings.length} animals available`}</p>
             </div>
             <button type="button" onClick={() => { setFiltersOpen((isOpen) => !isOpen); setMobileFiltersOpen(true); }} className="flex items-center gap-2 rounded-md border border-[#DDE8D9] bg-white px-3 py-2 text-sm font-medium text-[#1F3A2E] hover:bg-[#F7FBF5]">
               <SlidersHorizontal size={15} /> Filters
@@ -477,7 +487,19 @@ const Home = () => {
             ))}
           </div>
 
-          {filteredListings.length === 0 && (
+          {listingsError ? (
+            <div className="rounded-lg border border-[#F0C7C3] bg-[#FBEAE9] py-10 text-center">
+              <p className="font-medium text-[#8F2922]">Could not load listings</p>
+              <p className="mt-2 text-sm text-[#8F2922]">{listingsError}</p>
+              <button
+                type="button"
+                onClick={() => setListingRetry((count) => count + 1)}
+                className="mt-5 inline-flex bg-[#1F3A2E] px-5 py-3 text-sm font-medium text-white hover:bg-[#173025]"
+              >
+                Try again
+              </button>
+            </div>
+          ) : !listingsLoading && filteredListings.length === 0 ? (
             <div className="rounded-lg border border-dashed border-[#C9BFA8] bg-[#F5F2EA] py-16 text-center">
               <p className="font-medium text-[#1F3A2E]">No listings match yet</p>
               <p className="mt-2 text-sm text-[#7A8172]">Try a different search, or be the first to list here.</p>
@@ -489,7 +511,7 @@ const Home = () => {
                 Create a listing
               </button>
             </div>
-          )}
+          ) : null}
 
           {filteredListings.length > 8 && (
             <div className="mt-6 text-center">

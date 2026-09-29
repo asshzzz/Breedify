@@ -67,7 +67,7 @@ export const uploadImage = async (req, res) => {
     }
 
     // Check permission
-    if (animalRecord.createdBy.toString() !== req.user.id && req.user.role !== 'admin') {
+    if (animalRecord.createdBy.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'You do not have permission to upload images for this record'
@@ -137,7 +137,7 @@ export const getImagesByAnimal = async (req, res) => {
     }
 
     // Check permission
-    if (req.user.role === 'user' && animalRecord.createdBy.toString() !== req.user.id) {
+    if (animalRecord.createdBy.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'You do not have permission to view images for this record'
@@ -312,7 +312,7 @@ export const deleteImage = async (req, res) => {
     }
 
     // Check permission
-    if (image.uploadedBy.toString() !== req.user.id && req.user.role !== 'admin') {
+    if (image.uploadedBy.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'You do not have permission to delete this image'
@@ -416,7 +416,7 @@ export const uploadMultipleImages = async (req, res) => {
     }
 
     // Check permission
-    if (animalRecord.createdBy.toString() !== req.user.id && req.user.role !== 'admin') {
+    if (animalRecord.createdBy.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'You do not have permission to upload images for this record'

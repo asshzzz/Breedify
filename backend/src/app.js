@@ -48,11 +48,5 @@ app.get("/", (req, res) => {
 // ======== predict api =========
 app.use('/api/breed', predictRoute); 
 
-// ======== setting routes ========
-
-import settingsRoutes from './routes/setting.routes.js';
-
-app.use('/api/v1/settings', settingsRoutes);
-
 // ====== Export ======
 export default app ;

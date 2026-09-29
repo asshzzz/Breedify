@@ -93,7 +93,6 @@ The frontend expects the following backend surface (adjust to match your actual 
 | Generate / export report | via `reportAPI.generate`, `reportAPI.exportPDF` |
 | Image upload | via `imageAPI.upload` |
 | Auth (login/register/current user/update) | via `authAPI` |
-| Settings (get/update) | via `settingsAPI` |
 
 Authenticated requests use a bearer token stored client-side (`localStorage`) and sent as `Authorization: Bearer <token>`.
 

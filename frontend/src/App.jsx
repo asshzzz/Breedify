@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { isAuthenticated } from './api';
 
 
 // Import all pages
@@ -21,8 +22,7 @@ import ChatConversation from './pages/ChatConversation';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
-  if (!token) return <Navigate to="/login" />;
+  if (!isAuthenticated()) return <Navigate to="/login" replace />;
   return children ;
 };
 
@@ -30,7 +30,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
+        {/* Public / unprotected Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

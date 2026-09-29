@@ -10,10 +10,47 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+let authExpiryTimeout;
+
+const getTokenExpiration = (token) => {
+  try {
+    const payload = token.split('.')[1];
+    if (!payload) return null;
+
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const decoded = JSON.parse(atob(base64.padEnd(Math.ceil(base64.length / 4) * 4, '=')));
+    return Number.isFinite(decoded.exp) ? decoded.exp * 1000 : null;
+  } catch {
+    return null;
+  }
+};
+
+const isTokenExpired = (token) => {
+  const expiration = getTokenExpiration(token);
+  return expiration === null || expiration <= Date.now();
+};
+
+const scheduleAuthExpiry = (token) => {
+  clearTimeout(authExpiryTimeout);
+  const expiration = getTokenExpiration(token);
+  const delay = expiration === null ? 0 : Math.max(0, expiration - Date.now());
+
+  authExpiryTimeout = setTimeout(() => {
+    clearAuthData();
+    if (!window.location.pathname.includes('/login')) {
+      window.location.href = '/login';
+    }
+  }, delay);
+};
+
 // ====== Request Interceptor (Attach Token) ======
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    let token = localStorage.getItem('token');
+    if (token && isTokenExpired(token)) {
+      clearAuthData();
+      token = null;
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,8 +68,7 @@ api.interceptors.response.use(
 
       // 🔒 Unauthorized
       if (status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        clearAuthData();
         if (!window.location.pathname.includes('/login')) {
           window.location.href = '/login';
         }
@@ -111,12 +147,6 @@ export const reportAPI = {
 };
 
 
-// ================ settiings api ==================
-export const settingsAPI = {
-  get: () => api.get('/settings'),
-  update: (settingsData) => api.put('/settings', settingsData),
-};
-
 // ===================== 🔥 ROBOFLOW BREED DETECTION API =====================
 export const roboflowAPI = {
   predictBreed: async (imageFile) => {
@@ -149,21 +179,33 @@ export const setAuthToken = (token) => {
   if (token) {
     localStorage.setItem('token', token);
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    scheduleAuthExpiry(token);
   } else {
-    localStorage.removeItem('token');
-    delete api.defaults.headers.common['Authorization'];
+    clearAuthData();
   }
 };
 
 export const getAuthToken = () => localStorage.getItem('token');
 
 export const clearAuthData = () => {
+  clearTimeout(authExpiryTimeout);
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   delete api.defaults.headers.common['Authorization'];
 };
 
-export const isAuthenticated = () => !!localStorage.getItem('token');
+export const isAuthenticated = () => {
+  const token = getAuthToken();
+  if (!token) return false;
+  if (isTokenExpired(token)) {
+    clearAuthData();
+    return false;
+  }
+  return true;
+};
+
+const storedToken = localStorage.getItem('token');
+if (storedToken) scheduleAuthExpiry(storedToken);
 
 export const setUserData = (user) =>
   localStorage.setItem('user', JSON.stringify(user));
