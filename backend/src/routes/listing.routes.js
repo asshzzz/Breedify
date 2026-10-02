@@ -49,7 +49,7 @@ router.post('/', verifyJWT, async (req, res) => {
 
     res.status(201).json({ success: true, message: 'Listing created successfully', data: listing });
   } catch (error) {
-    res.status(400).json({ success: false, message: 'Could not create listing', error: error.message });
+    res.status(400).json({ success: false, message: error.message, error: error.message });
   }
 });
 

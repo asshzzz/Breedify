@@ -18,6 +18,7 @@ const SellAnimal = () => {
   const navigate = useNavigate();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const publishing = useRef(false);
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState("");
   const [stream, setStream] = useState(null);
@@ -122,8 +123,13 @@ const SellAnimal = () => {
 
   const publishListing = async (event) => {
     event.preventDefault();
+    if (publishing.current) return;
     if (!prediction)
       return setMessage("Identify the breed before publishing your listing.");
+    const imageUrl = prediction.record?.images?.[0]?.imageUrl;
+    if (!imageUrl)
+      return setMessage("The predicted image is missing. Upload and identify the photo again.");
+    publishing.current = true;
     setBusy(true);
     setMessage("");
     try {
@@ -140,12 +146,13 @@ const SellAnimal = () => {
         location: form.location,
         description: form.description,
         animalRecord: prediction.record?._id,
-        images: [{ imageUrl: prediction.record?.images?.[0]?.imageUrl }],
+        images: [{ imageUrl }],
       });
       navigate("/my-listings");
     } catch (error) {
       setMessage(error?.message || "Could not publish listing.");
     } finally {
+      publishing.current = false;
       setBusy(false);
     }
   };
