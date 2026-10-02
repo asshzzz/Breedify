@@ -6,6 +6,7 @@ import {
   ImagePlus,
   LoaderCircle,
   Upload,
+  X,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { listingAPI } from "../api";
@@ -18,6 +19,7 @@ const SellAnimal = () => {
   const navigate = useNavigate();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const fileInputRef = useRef(null);
   const publishing = useRef(false);
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState("");
@@ -43,6 +45,11 @@ const SellAnimal = () => {
     [stream],
   );
 
+  useEffect(() => {
+    if (!preview) return;
+    return () => URL.revokeObjectURL(preview);
+  }, [preview]);
+
   const selectImage = (file) => {
     if (!file?.type.startsWith("image/")) {
       setMessage("Please choose a valid image file.");
@@ -52,6 +59,14 @@ const SellAnimal = () => {
     setPreview(URL.createObjectURL(file));
     setPrediction(null);
     setMessage("");
+  };
+
+  const removeSelectedImage = () => {
+    setImageFile(null);
+    setPreview("");
+    setPrediction(null);
+    setMessage("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const startCamera = async () => {
@@ -193,7 +208,7 @@ const SellAnimal = () => {
             <h2 className="text-lg font-semibold text-[#173B2D]">
               Animal photo
             </h2>
-            <div className="mt-5 aspect-[4/3] overflow-hidden bg-[#173B2D]">
+            <div className="relative mt-5 aspect-[4/3] overflow-hidden bg-[#173B2D]">
               {cameraOpen ? (
                 <video
                   ref={videoRef}
@@ -216,12 +231,24 @@ const SellAnimal = () => {
                   </span>
                 </div>
               )}
+              {preview && !cameraOpen && (
+                <button
+                  type="button"
+                  onClick={removeSelectedImage}
+                  aria-label="Remove selected image"
+                  title="Remove image"
+                  className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full bg-black/70 text-white shadow-md transition-colors hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  <X size={19} />
+                </button>
+              )}
             </div>
             <canvas ref={canvasRef} className="hidden" />
             <div className="mt-4 grid grid-cols-2 gap-3">
               <label className="flex cursor-pointer items-center justify-center gap-2 border border-[#D7DFD6] px-3 py-3 text-sm font-semibold text-[#173B2D] hover:bg-[#F7FAF4]">
                 <Upload size={17} /> Upload
                 <input
+                  ref={fileInputRef}
                   type="file"
                   accept="image/*"
                   className="hidden"
