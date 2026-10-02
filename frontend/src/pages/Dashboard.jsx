@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Camera, FileText, LogOut, Menu, X, Upload, AlertCircle, ArrowLeft, ArrowRight, Settings } from 'lucide-react';
 import { authAPI, recordAPI, clearAuthData, isAuthenticated, getUserData } from '../api';
-import breedifyLogo from '../assets/breedify_logo.png';
+import breedifyLogo from '../assets/logo.png';
 
 const Dashboard = () => {
   const navigate = useNavigate();

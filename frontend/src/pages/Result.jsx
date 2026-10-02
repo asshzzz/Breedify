@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, Download, Share2, Save, CheckCircle } from "lucide-react";
 import { toast } from "react-toastify";
-import breedifyLogo from "../assets/breedify_logo.png";
+import breedifyLogo from "../assets/logo.png";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000"; // ✅ Adjust according to backend
 

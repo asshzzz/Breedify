@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, Phone, AlertCircle, CheckCircle } from 'lucide-react';
 import { authAPI, isAuthenticated } from '../api.js';
-import breedifyLogo from '../assets/breedify_logo.png';
+import breedifyLogo from '../assets/logo.png';
 
 const Register = () => {
   const navigate = useNavigate();

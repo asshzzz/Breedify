@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { ArrowRight, Camera, Lock, Mail, MessageCircle, Phone, Search, User, UserCircle, SlidersHorizontal, X, AlertCircle, CheckCircle } from 'lucide-react';
 import { authAPI, getUserData, isAuthenticated, listingAPI, setAuthToken, setUserData } from '../api';
-import breedifyLogo from '../assets/breedify_logo.png';
+import breedifyLogo from '../assets/logo.png';
 
 // Add once to index.html <head>, if not already present:
 // <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -303,9 +303,9 @@ const Home = () => {
       {/* Top bar */}
       <header className="sticky top-0 z-40 bg-[#EAF4E7]/95 backdrop-blur border-b border-[#C9DEC5]">
         <div className="grid grid-cols-2 items-center gap-3 px-4 py-3 lg:grid-cols-[1fr_auto_1fr] lg:px-6">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img src={breedifyLogo} alt="Breedify" className="h-9 w-9 object-contain" />
-            <span className="font-display text-lg font-semibold text-[#1F3A2E]">Breedify</span>
+          <Link to="/" className="flex items-center gap-0">
+            <img src={breedifyLogo} alt="Breedify" className="h-16 w-16 object-contain" />
+            <span className="font-display text-xl font-semibold leading-none text-[#1F3A2E]">Breedify</span>
           </Link>
 
           <div className="relative col-span-2 row-start-2 w-full lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:w-[min(50vw,36rem)]">

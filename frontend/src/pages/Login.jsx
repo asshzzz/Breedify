@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
 import { authAPI, setAuthToken, setUserData, isAuthenticated } from '../api';
-import breedifyLogo from '../assets/breedify_logo.png';
+import breedifyLogo from '../assets/logo.png';
 
 const Login = () => {
   const navigate = useNavigate();

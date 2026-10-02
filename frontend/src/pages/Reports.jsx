@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Download, Calendar, TrendingUp, PieChart, RefreshCw, AlertCircle } from 'lucide-react';
 import { reportAPI, recordAPI } from '../api'; // ← Import API services
-import breedifyLogo from '../assets/breedify_logo.png';
+import breedifyLogo from '../assets/logo.png';
 
 const Reports = () => {
   const [dateRange, setDateRange] = useState('month');
