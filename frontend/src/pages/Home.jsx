@@ -32,6 +32,27 @@ const getImageUrl = (imageUrl) => {
   return new URL(imageUrl, `${API_ORIGIN}/`).toString();
 };
 
+const ListingCardImage = ({ imageUrl, title }) => {
+  const [failedUrl, setFailedUrl] = useState('');
+
+  if (!imageUrl || failedUrl === imageUrl) {
+    return (
+      <div className="flex h-full items-center justify-center text-[#A9B09E]">
+        <Camera size={24} />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={getImageUrl(imageUrl)}
+      alt={title}
+      className="h-full w-full object-cover"
+      onError={() => setFailedUrl(imageUrl)}
+    />
+  );
+};
+
 const Home = () => {
   const navigate = useNavigate();
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -457,17 +478,7 @@ const Home = () => {
                 className="group flex aspect-square min-w-0 flex-col rounded-lg border border-[#E4DFD3] bg-white p-3 transition-colors hover:border-[#C9BFA8]"
               >
                 <div className="relative h-1/2 shrink-0 overflow-hidden rounded-md bg-[#F0ECE1]">
-                  {listing.images?.[0]?.imageUrl ? (
-                    <img
-                      src={getImageUrl(listing.images[0].imageUrl)}
-                      alt={listing.title}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-[#A9B09E]">
-                      <Camera size={24} />
-                    </div>
-                  )}
+                  <ListingCardImage imageUrl={listing.images?.[0]?.imageUrl} title={listing.title} />
                 </div>
 
                 <div className="flex min-h-0 flex-1 flex-col justify-between pt-3">

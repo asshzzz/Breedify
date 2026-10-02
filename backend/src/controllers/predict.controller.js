@@ -1,12 +1,9 @@
 // src/controllers/predict.controller.js
 import dotenv from "dotenv";
-import fs from "fs/promises";
-import path from "path";
 import crypto from "crypto";
 import { AnimalRecord } from "../models/record.model.js";
+import { uploadToCloudinary } from "../utils/cloudinary.js";
 dotenv.config();
-
-const uploadDirectory = path.join(process.cwd(), "public", "uploads");
 
 const createAnimalNumber = async () => {
   let animalId;
@@ -125,10 +122,7 @@ export const predictBreed = async (req, res) => {
       });
     }
 
-    await fs.mkdir(uploadDirectory, { recursive: true });
-    const extension = path.extname(req.file.originalname) || ".jpg";
-    const fileName = `${Date.now()}-${crypto.randomBytes(8).toString("hex")}${extension}`;
-    await fs.writeFile(path.join(uploadDirectory, fileName), req.file.buffer);
+    const uploadResult = await uploadToCloudinary(req.file.buffer);
 
     const animalId = await createAnimalNumber();
     const record = await AnimalRecord.create({
@@ -138,7 +132,7 @@ export const predictBreed = async (req, res) => {
       breed,
       ownerName: req.user.name,
       center: "Breedify",
-      images: [{ imageType: "other", imageUrl: `/uploads/${fileName}` }],
+      images: [{ imageType: "other", imageUrl: uploadResult.secure_url }],
       aiAnalysis: {
         confidence: confidence ? Number((confidence * 100).toFixed(2)) : undefined,
         analyzedAt: new Date(),

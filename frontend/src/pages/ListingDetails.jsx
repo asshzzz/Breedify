@@ -14,6 +14,7 @@ const ListingDetails = () => {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [failedImageUrl, setFailedImageUrl] = useState('');
 
   useEffect(() => {
     const loadListing = async () => {
@@ -60,7 +61,11 @@ const ListingDetails = () => {
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <main>
             <div className="aspect-[4/3] overflow-hidden bg-[#173B2D]">
-              {imageUrl ? <img src={imageUrl} alt={listing.title} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-white/60">No image available</div>}
+              {imageUrl && imageUrl !== failedImageUrl ? (
+                <img src={imageUrl} alt={listing.title} className="h-full w-full object-cover" onError={() => setFailedImageUrl(imageUrl)} />
+              ) : (
+                <div className="flex h-full items-center justify-center text-white/60">No image available</div>
+              )}
             </div>
             <div className="mt-6 bg-white p-6 ring-1 ring-[#E5E7EB]">
               <div className="flex flex-wrap items-start justify-between gap-4">
