@@ -63,5 +63,6 @@ const listingSchema = new mongoose.Schema({
 
 listingSchema.index({ status: 1, animalType: 1, createdAt: -1 });
 listingSchema.index({ seller: 1, createdAt: -1 });
+listingSchema.index({ status: 1, createdAt: -1 });
 
 export const Listing = mongoose.model('Listing', listingSchema);

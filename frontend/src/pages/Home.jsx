@@ -471,7 +471,18 @@ const Home = () => {
 
           {/* Listing grid */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredListings.slice(0, 8).map((listing) => (
+            {listingsLoading && listings.length === 0 ? Array.from({ length: 3 }, (_, index) => (
+              <div key={`listing-skeleton-${index}`} aria-hidden="true" className="flex aspect-square min-w-0 flex-col rounded-lg border border-[#E4DFD3] bg-white p-3">
+                <div className="h-1/2 shrink-0 animate-pulse rounded-md bg-[#F0ECE1]" />
+                <div className="flex flex-1 flex-col justify-between pt-3">
+                  <div>
+                    <div className="h-4 w-3/4 animate-pulse rounded bg-[#ECE9E0]" />
+                    <div className="mt-2 h-3 w-1/2 animate-pulse rounded bg-[#F0ECE1]" />
+                  </div>
+                  <div className="h-3 w-2/3 animate-pulse rounded bg-[#F0ECE1]" />
+                </div>
+              </div>
+            )) : filteredListings.slice(0, 8).map((listing) => (
               <Link
                 key={listing._id}
                 to={`/listing/${listing._id}`}

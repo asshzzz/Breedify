@@ -15,8 +15,9 @@ router.get('/', async (req, res) => {
     }
 
     const listings = await Listing.find(filter)
-      .populate('seller', 'name email')
-      .sort({ createdAt: -1 });
+      .select('title animalType breed sex price location images createdAt')
+      .sort({ createdAt: -1 })
+      .lean();
 
     res.status(200).json({ success: true, count: listings.length, data: listings });
   } catch (error) {
